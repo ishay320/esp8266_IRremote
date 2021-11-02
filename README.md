@@ -17,6 +17,9 @@ if you wish to connect the LED to different pin its in:
 const uint16_t kIrLed = 4; 
 ```
 
+if you want to send sensor data to the user add it to function `handleSendData()`
+
+
 ## the project goals:
 * Running server
 * Controll IR
@@ -27,4 +30,4 @@ const uint16_t kIrLed = 4;
 ## done:
 * Running server
 * Controll IR
-* full OTA support
+* full OTA support via arduinoIDE
