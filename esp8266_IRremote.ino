@@ -5,24 +5,23 @@
 #include <ESP8266WiFi.h>
 #include <ESP8266WebServer.h>
 
-#include "html.h"
-
 #include <IRremoteESP8266.h>
 #include <IRac.h>
 #include <IRutils.h>
 
-const char* ssid = "Bspot0856_2.4_plus";
-const char* password = "7C000856";
+#include "html.h"
 
-int a = 0;
+const char* ssid = "ssid";
+const char* password = "pass";
+
+int a = 0; // for checking how many masseges sended in handleSendData()
 ESP8266WebServer server(80);
 
 const uint16_t kIrLed = 4;  // The ESP GPIO pin to use that controls the IR LED.
 IRac ac(kIrLed);  // Create a A/C object using GPIO to sending messages with.
 
 
-void handleLedProg(){
-
+void handleLedProg(){ // gets what to output via the IR
   if(server.args()!=18){
     return;
   }
@@ -46,15 +45,13 @@ void handleLedProg(){
   ac.next.power = atoi(server.arg(17).c_str());
   ac.sendAc();  // Send the message.
   server.send(200, "text", "sent seccesfuly!");
-
 }
 
-void handleSendData(){
+void handleSendData(){ // for sending data like sensors etc
   a++;
   char str[10];
   sprintf(str, "%d", a);
   server.send(200, "text", str);
-
 }
 
 void handleRoot(){ // root of server
@@ -63,12 +60,13 @@ void handleRoot(){ // root of server
 
 //********************** setup ************//
 void setup() {
-        Serial.begin(115200);
-   delay(200);
+    Serial.begin(115200);
+    delay(200);
 
     WiFi.mode(WIFI_STA);
     WiFi.begin(ssid, password);
-    while (WiFi.waitForConnectResult() != WL_CONNECTED) { 
+    while (WiFi.waitForConnectResult() != WL_CONNECTED)
+    { 
     }
     
    ArduinoOTA.onStart([]() {
@@ -89,19 +87,18 @@ void setup() {
    else if (error == OTA_RECEIVE_ERROR) Serial.println("Receive Failed");
    else if (error == OTA_END_ERROR) Serial.println("End Failed");
   });
-    ArduinoOTA.begin();
+  ArduinoOTA.begin();
 
-    Serial.print("IP address: ");
-    Serial.println(WiFi.localIP());
+  Serial.print("IP address: ");
+  Serial.println(WiFi.localIP());
 
-    // server.on("/wifi",handleWifi);
-   server.on("/temp",handleSendData);
-    server.begin();
-    server.on("/", handleRoot);
-    server.on("/irSend",handleLedProg);
-    server.begin();
+  server.on("/temp",handleSendData);
+  server.begin();
+  server.on("/", handleRoot);
+  server.on("/irSend",handleLedProg);
+  server.begin();
 
-    // Set up what we want to send.
+  // Set up what we want to send via the IR.
   // See state_t, opmode_t, fanspeed_t, swingv_t, & swingh_t in IRsend.h for
   // all the various options.
   ac.next.protocol = (decode_type_t)18; //decode_type_t::DAIKIN;  // Set a protocol to use.
@@ -122,12 +119,10 @@ void setup() {
   ac.next.clean = true;  // Turn off any Cleaning options if we can.
   ac.next.clock = -1;  // Don't set any current time if we can avoid it.
   ac.next.power = false;  // Initially start with the unit off.
-
 }
 
 void loop() {
   ArduinoOTA.handle();
   server.handleClient();
 
-  
 }
