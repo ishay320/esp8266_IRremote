@@ -1,7 +1,11 @@
 # IR remote server running on esp8266
 ```this project is written for the arduino ide```
-Right now the project connect to the internet, show a page to the user and control any AC unit.  
-Also can reupload the code remotely.
+
+Right now the project:
+- Connect to the internet.
+- Show a control page to the user.
+- Control any AC unit.  
+- Reupload the code remotely.
 
 # How to use
 ## schematic
