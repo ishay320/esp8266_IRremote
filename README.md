@@ -1,5 +1,5 @@
 # IR remote server running on esp8266
-```this project is written in the arduino ide```
+```this project is written for the arduino ide```
 
 # How to use
 ## schematic
