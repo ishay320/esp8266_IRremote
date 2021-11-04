@@ -12,3 +12,4 @@
 * Running server
 * Controll IR
 * full OTA support
+* python script that makes html files to .h

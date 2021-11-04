@@ -1,1 +1,2 @@
 those files are just for developing and the real html are in html.h
+run ../make_html.py that make html.h file by the html here

@@ -16,12 +16,12 @@
         <input type="number" id="model" name="model" value="1"><br><br>
         <label for="mode">mode</label>
         <select id="mode" name="mode">
-            <option value="-1">kOff</option>
-            <option value="0" selected="selected">kAuto</option>
-            <option value="1">kCool</option>
-            <option value="2">kHeat</option>
-            <option value="3">kDry</option>
-            <option value="4">kFan</option>
+            <option value="-1">Off</option>
+            <option value="0" selected="selected">Auto</option>
+            <option value="1">Cool</option>
+            <option value="2">Heat</option>
+            <option value="3">Dry</option>
+            <option value="4">Fan</option>
         </select><br><br>
         <label for="celsius">celsius</label>
         <input type="hidden" name="celsius" value="1"><input type="checkbox"
@@ -30,33 +30,33 @@
         <input type="number" id="degrees" name="degrees" value="23"><br><br>
         <label for="fanspeed">fanspeed</label>
         <select id="fanspeed" name="fanspeed">
-            <option value="0">kAuto</option>
-            <option value="1">kMin</option>
-            <option value="2">kLow</option>
-            <option value="3">kMedium</option>
-            <option value="4">kHigh</option>
-            <option value="5">kMax</option>
+            <option value="0">Auto</option>
+            <option value="1">Min</option>
+            <option value="2">Low</option>
+            <option value="3">Medium</option>
+            <option value="4">High</option>
+            <option value="5">Max</option>
         </select><br><br>
         <label for="swingv">swingv</label>
         <select id="swingv" name="swingv">
-            <option value="-1">kOff</option>
-            <option value="0">kAuto</option>
-            <option value="1">kHighest</option>
-            <option value="2">kHigh</option>
-            <option value="3">kMiddle</option>
-            <option value="4">kLow</option>
-            <option value="5">kLowest</option>
+            <option value="-1">Off</option>
+            <option value="0">Auto</option>
+            <option value="1">Highest</option>
+            <option value="2">High</option>
+            <option value="3">Middle</option>
+            <option value="4">Low</option>
+            <option value="5">Lowest</option>
         </select><br><br>
         <label for="swingh">swingh</label>
         <select id="swingh" name="swingh">
-            <option value="-1">kOff</option>
-            <option value="0">kAuto</option>
-            <option value="1">kLeftMax</option>
-            <option value="2">kLeft</option>
-            <option value="3">kMiddle</option>
-            <option value="4">kRight</option>
-            <option value="5">kRightMax</option>
-            <option value="5">kWide</option>
+            <option value="-1">Off</option>
+            <option value="0">Auto</option>
+            <option value="1">LeftMax</option>
+            <option value="2">Left</option>
+            <option value="3">Middle</option>
+            <option value="4">Right</option>
+            <option value="5">RightMax</option>
+            <option value="5">Wide</option>
         </select><br><br>
         <label for="light">light</label>
         <input type="hidden" name="light" value="1"><input type="checkbox"
@@ -88,6 +88,22 @@
             onclick="this.previousSibling.value=1-this.previousSibling.value" checked><br><br>
         <input type="submit" value="Submit">
     </form>
+
+
+    <!-- TODO: add sensor -->
+    <script>
+        setInterval(function () {
+            var xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = function () {
+                if (this.readyState == 4 && this.status == 200) {
+                    var temp = this.responseText;
+                    document.getElementById("temp").textContent = temp;
+                }
+            };
+            xhttp.open("GET", "/temp", true);
+            xhttp.send();
+        }, 1000);
+    </script>
 </body>
 
 </html>
