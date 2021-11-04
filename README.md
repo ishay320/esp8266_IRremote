@@ -23,7 +23,8 @@ if you wish to connect the LED to different pin its in:
 const uint16_t kIrLed = 4; 
 ```
 
-if you want to send sensor data to the user add it to function `handleSendData()`
+if you want to send sensor data to the user add it to function `handleSendData()`<br>
+in order to change the html files, change them in `html_files` folder and then run `make_html.py`
 
 
 ## the project goals:
