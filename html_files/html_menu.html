@@ -9,13 +9,15 @@
 </head>
 
 <body>
-    <h2>Welcome to esp server</h2>
+    <h2>Welcome to esp8266 IR server</h2>
     <form action="/wifi">
         <input type="submit" value="wifi config" />
     </form>
     <div id="temp">
         124243
     </div>
+    
+    <!-- get temp and show on screen -->
     <script>
         setInterval(function () {
             var xhttp = new XMLHttpRequest();
