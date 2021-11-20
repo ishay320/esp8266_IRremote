@@ -14,7 +14,7 @@
 
 #define SSID_POS 0
 #define CONNECTION_TIME_TRY 50
-const char *ssid = "Bspot0856_2.4_plusa";
+const char *ssid = "Bspot0856_2.4_plus";
 const char *password = "7C000856";
 
 typedef struct {
@@ -98,7 +98,7 @@ void setup() {
     Serial.begin(115200);
     delay(2000);
     pinMode(16, OUTPUT);
-    digitalWrite(16, LOW);
+    digitalWrite(16, HIGH);
 
     // wifi_login log{.ssid = "", .password = ""};
     // EEPROM.begin(512); // Initialize EEPROM
