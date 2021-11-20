@@ -62,20 +62,24 @@ void handleSendData() { // for sending data like sensors etc
 }
 
 void handleRoot() { // root of server
+    server.send(200, "html", html_menu);
+}
+
+void handleIRController() { // IR controller
     server.send(200, "html", html_IRController);
 }
+
 void handleLogin() { // wifi setting
     server.send(200, "html", html_wifiLogin);
 }
+
 void handleSSIDData() { // wifi setting
-    if (server.args() == 2) {
-        wifi_login wifi = {.ssid = server.arg(0).c_str(), .password = server.arg(1).c_str()};
-        Serial.printf("ssid %s, pass %s\n", wifi.ssid, wifi.password);
-        // EEPROM.put(SSID_POS, wifi);
-        // EEPROM.commit();
-        server.send(200, "html", "trying to connect");
-        // ESP.restart();
-    }
+    wifi_login wifi = {.ssid = server.arg(0).c_str(), .password = server.arg(1).c_str()};
+    Serial.printf("ssid %s, pass %s\n", wifi.ssid, wifi.password);
+    // EEPROM.put(SSID_POS, wifi);
+    // EEPROM.commit();
+    server.send(200, "html", "trying to connect");
+    // ESP.restart();
 }
 
 void handleGetWireless() { // search for networks and send them to the client
@@ -163,13 +167,15 @@ void setup() {
 
     server.begin();
     server.on("/", handleRoot);
-    server.on("/temp", handleSendData);
-    server.on("/irSend", handleLedProg);
-    server.on("/getWireless", handleGetWireless);
+    server.on("/irController", handleIRController);
     server.on("/wifiLogin", handleLogin);
+
+    server.on("/irSend", handleLedProg);
     server.on("/wifiInfo", handleSSIDData);
+
+    server.on("/temp", handleSendData);
+    server.on("/getWireless", handleGetWireless);
     server.begin();
-    Serial.printf("probe2\n");
 
     // Set up what we want to send via the IR.
     // See state_t, opmode_t, fanspeed_t, swingv_t, & swingh_t in IRsend.h for

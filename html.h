@@ -96,6 +96,11 @@ const char html_IRController[] = R"=====(<!DOCTYPE html>
         <input type="submit" value="Submit">
     </form>
 
+    <form action="/">
+        <br>
+        <button>back to menu</button>
+    </form>
+
 
     <!-- TODO: add sensor -->
     <script>
@@ -126,15 +131,22 @@ const char html_menu[] = R"=====(<!DOCTYPE html>
 </head>
 
 <body>
-    <h2>Welcome to esp8266 IR server</h2>
-    <form action="/wifi">
-        <input type="submit" value="wifi config" />
+    <h2>Welcome to esp server</h2>
+
+    <form action="/irController">
+        <br>
+        <button>IR Controller</button>
+
     </form>
+
+    <form action="/wifiLogin">
+        <br>
+        <button>WIFI Setting</button>
+    </form>
+    <div>sensor data:</div>
     <div id="temp">
         124243
     </div>
-    
-    <!-- get temp and show on screen -->
     <script>
         setInterval(function () {
             var xhttp = new XMLHttpRequest();
@@ -147,7 +159,11 @@ const char html_menu[] = R"=====(<!DOCTYPE html>
             xhttp.open("GET", "/temp", true);
             xhttp.send();
         }, 1000);
+
+
     </script>
+
+
 </body>
 
 </html>)=====";
@@ -163,7 +179,7 @@ const char html_wifiLogin[] = R"=====(<!DOCTYPE html>
 </head>
 
 <body>
-  <h2>Welcome to WIFI connection setting</h2>
+  <h2>WIFI connection setting</h2>
   <!-- back button -->
   <form action="/wifiInfo" method="POST">
     <!-- dropdown by the board search -->
@@ -175,6 +191,13 @@ const char html_wifiLogin[] = R"=====(<!DOCTYPE html>
     <input type="password" id="password" name="password"><br><br>
     <input type="submit" value="set">
   </form>
+
+  <form action="/">
+    <br>
+    <button>back to menu</button>
+
+  </form>
+
   <script>
 
     function updateList() {
@@ -206,5 +229,6 @@ const char html_wifiLogin[] = R"=====(<!DOCTYPE html>
 
   </script>
 </body>
+
 </html>)=====";
 

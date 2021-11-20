@@ -10,25 +10,21 @@
 
 <body>
     <h2>Welcome to esp server</h2>
-   <form action="/wifi">
-       <input type="submit" value="wifi config" />
-   </form>
-   
+
+    <form action="/irController">
+        <br>
+        <button>IR Controller</button>
+
+    </form>
+
+    <form action="/wifiLogin">
+        <br>
+        <button>WIFI Setting</button>
+    </form>
+    <div>sensor data:</div>
     <div id="temp">
         124243
     </div>
-
-    <form action="html_IRController.html">
-        <br>
-        <button>IR Controler</button>
-        
-    </form>
-
-    <form action="html_login.html">
-        <br>
-        <button>Setting</button>
-    </form>
-
     <script>
         setInterval(function () {
             var xhttp = new XMLHttpRequest();
@@ -42,10 +38,10 @@
             xhttp.send();
         }, 1000);
 
-        
+
     </script>
 
-   
+
 </body>
 
 </html>
