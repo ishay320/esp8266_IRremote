@@ -115,26 +115,6 @@ const char html_IRController[] = R"=====(<!DOCTYPE html>
 
 </html>)=====";
 
-const char html_login[] = R"=====(<!DOCTYPE html>
-<html>
-<head>
-    <meta charset='utf-8'>
-    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
-    <title>Wifi Config</title>
-    <meta name='viewport' content='width=device-width, initial-scale=1'>
-</head>
-<body>
-    <h2>Welcome to WIFI connection and OTA</h2>
-<form action="/data" method="POST">
-  <label for="ssid">WIFI SSID:</label>
-  <input type="text" id="ssid" name="ssid"><br><br>
-  <label for="password">WIFI password:</label>
-  <input type="password" id="password" name="password" ><br><br>
-  <input type="submit" value="Submit">
-</form>
-</body>
-</html>)=====";
-
 const char html_menu[] = R"=====(<!DOCTYPE html>
 <html lang="en">
 
@@ -146,13 +126,15 @@ const char html_menu[] = R"=====(<!DOCTYPE html>
 </head>
 
 <body>
-    <h2>Welcome to esp server</h2>
+    <h2>Welcome to esp8266 IR server</h2>
     <form action="/wifi">
         <input type="submit" value="wifi config" />
     </form>
     <div id="temp">
         124243
     </div>
+    
+    <!-- get temp and show on screen -->
     <script>
         setInterval(function () {
             var xhttp = new XMLHttpRequest();
@@ -170,38 +152,59 @@ const char html_menu[] = R"=====(<!DOCTYPE html>
 
 </html>)=====";
 
-const char html_wifi[] = R"=====(<!DOCTYPE html>
-<html lang="en">
+const char html_wifiLogin[] = R"=====(<!DOCTYPE html>
+<html>
 
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>menu</title>
+  <meta charset='utf-8'>
+  <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+  <title>Wifi Config</title>
+  <meta name='viewport' content='width=device-width, initial-scale=1'>
 </head>
 
 <body>
-    <h2>Welcome to esp server</h2>
-    <form action="/wifi">
-        <input type="submit" value="wifi config" />
-    </form>
-    <div id="temp">
-        124243
-    </div>
-    <script>
-        setInterval(function () {
-            var xhttp = new XMLHttpRequest();
-            xhttp.onreadystatechange = function () {
-                if (this.readyState == 4 && this.status == 200) {
-                    var temp = this.responseText;
-                    document.getElementById("temp").textContent = temp;
-                }
-            };
-            xhttp.open("GET", "/temp", true);
-            xhttp.send();
-        }, 1000);
-    </script>
-</body>
+  <h2>Welcome to WIFI connection setting</h2>
+  <!-- back button -->
+  <form action="/wifiInfo" method="POST">
+    <!-- dropdown by the board search -->
+    <label for="ssid">WIFI SSID:</label>
+    <select id="mode" name="mode">
 
+    </select><br><br>
+    <label for="password">WIFI password:</label>
+    <input type="password" id="password" name="password"><br><br>
+    <input type="submit" value="set">
+  </form>
+  <script>
+
+    function updateList() {
+      var xhttp = new XMLHttpRequest();
+      xhttp.onreadystatechange = function () {
+        if (this.readyState == 4 && this.status == 200) {
+          let message = this.responseText;
+          let ssid = JSON.parse(message).SSID;
+          let list = document.getElementById("mode");
+          for (let index = 0; index < ssid.length; index++) {
+            option = document.createElement('option');
+            option.value = option.text = ssid[index];
+            list.add(option);
+          }
+        }
+      };
+      xhttp.open("GET", "/getWireless", true);
+      xhttp.send();
+    }
+
+    function remove() { // not working
+      var selectObject = document.getElementById("mode");
+      for (var i = 0; i < selectObject.length; i++) {
+        selectObject.remove(i);
+      }
+    }
+
+    updateList();
+
+  </script>
+</body>
 </html>)=====";
 
