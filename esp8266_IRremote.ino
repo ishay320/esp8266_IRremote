@@ -13,6 +13,7 @@
 #include "html.h"
 
 #define SSID_POS 0
+#define CONNECTION_TIME_TRY 50
 const char *ssid = "Bspot0856_2.4_plusa";
 const char *password = "7C000856";
 
@@ -112,7 +113,7 @@ void setup() {
     while (WiFi.waitForConnectResult() != WL_CONNECTED) {
         delay(100);
         Serial.print(".");
-        if (time_to_connect++ == 10 * 10) {
+        if (time_to_connect++ == CONNECTION_TIME_TRY * 10) {
             not_connected = true;
             break;
         }
