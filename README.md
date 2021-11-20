@@ -9,8 +9,10 @@ Right now the project:
 - Control any AC unit.
 - Reupload the code remotely.
 - if cannot connect to the wifi it open AP at `address = 192.168.4.22`
+- send temperature to the client
 
 # How to use
+
 ## schematic
 
 ![schematic](https://github.com/ishay320/esp8266_IRremote/blob/main/data/schematics.jpg)
@@ -24,7 +26,7 @@ const char* password = "pass";
 
 to your wifi.
 
-if you wish to connect the LED to different pin its in:
+if you wish to connect the IR LED to different pin its in:
 
 ```C
 const uint16_t kIrLed = 4;
@@ -48,3 +50,5 @@ in order to change the html files, change them in `html_files` folder and then r
 - full OTA support via arduinoIDE
 - python script that makes html files to .h
 - if cannot connect to the wifi it open AP at `address = 192.168.4.22`
+- temperature sensor (analog)
+- Reconfigure the WIFI on the fly - (but not save...)

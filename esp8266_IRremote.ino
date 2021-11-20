@@ -64,13 +64,11 @@ void handleLedProg() { // gets what to output via the IR
 }
 
 void handleSendData() { // for sending data like sensors etc
-    // a++;
     double sensorValue = 0;
     for (size_t i = 0; i < 10; i++) {
         sensorValue += Thermistor(analogRead(A0));
     }
     sensorValue /= 10;
-    // sprintf(str, "%d", sensorValue);
     String s = String(sensorValue, 3);
     server.send(200, "text", s);
 }
