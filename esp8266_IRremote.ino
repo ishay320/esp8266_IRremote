@@ -12,7 +12,7 @@
 
 #include "html.h"
 
-#define SSID_POS 1
+#define SSID_POS 0
 const char *ssid = "Bspot0856_2.4_plus";
 const char *password = "7C000856";
 
@@ -64,7 +64,7 @@ void handleRoot() { // root of server
     server.send(200, "html", html_IRController);
 }
 void handleLogin() { // wifi setting
-    server.send(200, "html", html_login);
+    server.send(200, "html", html_wifiLogin);
 }
 void handleSSIDData() { // wifi setting
     if (server.args() == 2) {
@@ -72,7 +72,7 @@ void handleSSIDData() { // wifi setting
         Serial.printf("ssid %s, pass %s\n", wifi.ssid, wifi.password);
         // EEPROM.put(SSID_POS, wifi);
         // EEPROM.commit();
-        server.send(200, "html", "saved and reset");
+        server.send(200, "html", "trying to connect");
         // ESP.restart();
     }
 }
@@ -96,39 +96,44 @@ void handleGetWireless() { // search for networks and send them to the client
 void setup() {
     Serial.begin(115200);
     delay(2000);
-    // EEPROM.begin(512); // Initialize EEPROM
+    pinMode(13, OUTPUT);
+
     // wifi_login log{.ssid = "", .password = ""};
+    // EEPROM.begin(512); // Initialize EEPROM
+    // TODO: make it not crush
     // EEPROM.get(SSID_POS, log);
+    // Serial.printf("ssid %s, pass %s\n", log.ssid, log.password);
 
     WiFi.mode(WIFI_STA);
     WiFi.begin(ssid, password);
     int time_to_connect = 0;
-    bool connected = true;
-    // Serial.printf("ssid %s, pass %s\n", log.ssid, log.password);
+    bool not_connected = false;
     while (WiFi.waitForConnectResult() != WL_CONNECTED) {
         delay(100);
         Serial.print(".");
-        // if (time_to_connect++ == 20 * 10) {
-        //     connected = false;
-        //     break;
-        // }
+        if (time_to_connect++ == 10 * 10) {
+            not_connected = true;
+            break;
+        }
     }
-    // IPAddress local_IP(192, 168, 4, 22);
-    // IPAddress gateway(192, 168, 4, 9);
-    // IPAddress subnet(255, 255, 255, 0);
-    // if (connected == false) {
-    //     WiFi.mode(WIFI_AP);
+    Serial.printf("status: %d,%d\n", WiFi.status(), WL_CONNECT_FAILED);
+    if (not_connected) {
+        WiFi.disconnect();
+        Serial.printf("status: %d,%d\n", WiFi.status(), WL_CONNECT_FAILED);
+        IPAddress local_IP(192, 168, 4, 22);
+        IPAddress gateway(192, 168, 4, 9);
+        IPAddress subnet(255, 255, 255, 0);
+        WiFi.mode(WIFI_AP);
 
-    //     Serial.print("Setting soft-AP configuration ... ");
-    //     Serial.println(WiFi.softAPConfig(local_IP, gateway, subnet) ? "Ready" : "Failed!");
+        Serial.print("Setting soft-AP configuration ... ");
+        Serial.println(WiFi.softAPConfig(local_IP, gateway, subnet) ? "Ready" : "Failed!");
 
-    //     Serial.print("Setting soft-AP ... ");
-    //     Serial.println(WiFi.softAP("ESPsoftAP_01") ? "Ready" : "Failed!");
+        Serial.print("Setting soft-AP ... ");
+        Serial.println(WiFi.softAP("ESP8266_IR") ? "Ready" : "Failed!");
 
-    //     Serial.print("Soft-AP IP address = ");
-    //     Serial.println(WiFi.softAPIP());
-    // }
-    Serial.printf("probe1\n");
+        Serial.print("Soft-AP IP address = ");
+        Serial.println(WiFi.softAPIP());
+    }
 
     ArduinoOTA.onStart([]() { Serial.println("Start"); });
     ArduinoOTA.onEnd([]() { Serial.println("\nEnd"); });
@@ -150,7 +155,6 @@ void setup() {
             Serial.println("End Failed");
     });
     ArduinoOTA.begin();
-    Serial.printf("probe1/2\n");
 
     Serial.print("IP address: ");
     Serial.println(WiFi.localIP());
@@ -187,9 +191,10 @@ void setup() {
     ac.next.clock = -1;                            // Don't set any current time if we can avoid it.
     ac.next.power = false;                         // Initially start with the unit off.
 }
-
+bool led = false;
 void loop() {
-    Serial.printf("probe3\n");
+    digitalWrite(13, led ? HIGH : LOW);
+    led = !led;
     ArduinoOTA.handle();
     server.handleClient();
 }
