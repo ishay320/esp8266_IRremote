@@ -80,6 +80,8 @@ void handleSSIDData() { // wifi setting
     // EEPROM.commit();
     server.send(200, "html", "trying to connect");
     // ESP.restart();
+    WiFi.disconnect();
+    tryToConnect(server.arg(0), server.args() == 2 ? server.arg(1) : "");
 }
 
 void handleGetWireless() { // search for networks and send them to the client
@@ -96,22 +98,9 @@ void handleGetWireless() { // search for networks and send them to the client
     s += "]}";
     server.send(200, "json", s);
 }
-
-//********************** setup ************//
-void setup() {
-    Serial.begin(115200);
-    delay(2000);
-    pinMode(16, OUTPUT);
-    digitalWrite(16, HIGH);
-
-    // wifi_login log{.ssid = "", .password = ""};
-    // EEPROM.begin(512); // Initialize EEPROM
-    // TODO:#8 make it not crush
-    // EEPROM.get(SSID_POS, log);
-    // Serial.printf("ssid %s, pass %s\n", log.ssid, log.password);
-
+void tryToConnect(String s, String p) {
     WiFi.mode(WIFI_STA);
-    WiFi.begin(ssid, password);
+    WiFi.begin(s, p);
     int time_to_connect = 0;
     bool not_connected = false;
     while (WiFi.waitForConnectResult() != WL_CONNECTED) {
@@ -139,7 +128,26 @@ void setup() {
 
         Serial.print("Soft-AP IP address = ");
         Serial.println(WiFi.softAPIP());
+    }else{
+    Serial.print("IP address: ");
+    Serial.println(WiFi.localIP());
     }
+}
+
+//********************** setup ************//
+void setup() {
+    Serial.begin(115200);
+    delay(2000);
+    pinMode(16, OUTPUT);
+    digitalWrite(16, HIGH);
+
+    // wifi_login log{.ssid = "", .password = ""};
+    // EEPROM.begin(512); // Initialize EEPROM
+    // TODO:#8 make it not crush
+    // EEPROM.get(SSID_POS, log);
+    // Serial.printf("ssid %s, pass %s\n", log.ssid, log.password);
+
+    tryToConnect(ssid, password);
 
     ArduinoOTA.onStart([]() { Serial.println("Start"); });
     ArduinoOTA.onEnd([]() { Serial.println("\nEnd"); });
@@ -161,9 +169,6 @@ void setup() {
             Serial.println("End Failed");
     });
     ArduinoOTA.begin();
-
-    Serial.print("IP address: ");
-    Serial.println(WiFi.localIP());
 
     server.begin();
     server.on("/", handleRoot);
