@@ -195,7 +195,8 @@ void setup() {
 }
 bool led = false;
 void loop() {
-    digitalWrite(16, led ? HIGH : LOW);
+    digitalWrite(16, LOW);
+    digitalWrite(16, HIGH);
     led = !led;
     ArduinoOTA.handle();
     server.handleClient();
