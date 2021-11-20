@@ -106,7 +106,7 @@ void setup() {
 
     // wifi_login log{.ssid = "", .password = ""};
     // EEPROM.begin(512); // Initialize EEPROM
-    // TODO: make it not crush
+    // TODO:#8 make it not crush
     // EEPROM.get(SSID_POS, log);
     // Serial.printf("ssid %s, pass %s\n", log.ssid, log.password);
 
