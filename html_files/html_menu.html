@@ -9,15 +9,26 @@
 </head>
 
 <body>
-    <h2>Welcome to esp8266 IR server</h2>
-    <form action="/wifi">
-        <input type="submit" value="wifi config" />
-    </form>
+    <h2>Welcome to esp server</h2>
+   <form action="/wifi">
+       <input type="submit" value="wifi config" />
+   </form>
+   
     <div id="temp">
         124243
     </div>
-    
-    <!-- get temp and show on screen -->
+
+    <form action="html_IRController.html">
+        <br>
+        <button>IR Controler</button>
+        
+    </form>
+
+    <form action="html_login.html">
+        <br>
+        <button>Setting</button>
+    </form>
+
     <script>
         setInterval(function () {
             var xhttp = new XMLHttpRequest();
@@ -30,7 +41,11 @@
             xhttp.open("GET", "/temp", true);
             xhttp.send();
         }, 1000);
+
+        
     </script>
+
+   
 </body>
 
 </html>
