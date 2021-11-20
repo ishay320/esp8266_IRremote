@@ -96,7 +96,7 @@ void handleGetWireless() { // search for networks and send them to the client
 void setup() {
     Serial.begin(115200);
     delay(2000);
-    pinMode(13, OUTPUT);
+    pinMode(16, OUTPUT);
 
     // wifi_login log{.ssid = "", .password = ""};
     // EEPROM.begin(512); // Initialize EEPROM
@@ -193,7 +193,7 @@ void setup() {
 }
 bool led = false;
 void loop() {
-    digitalWrite(13, led ? HIGH : LOW);
+    digitalWrite(16, led ? HIGH : LOW);
     led = !led;
     ArduinoOTA.handle();
     server.handleClient();
