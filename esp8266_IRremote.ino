@@ -12,6 +12,7 @@
 
 #include "html.h"
 
+#define LED 16
 #define SSID_POS 0
 #define CONNECTION_TIME_TRY 50
 const char *ssid = "Bspot0856_2.4_plus";
@@ -27,6 +28,14 @@ ESP8266WebServer server(80);
 
 const uint16_t kIrLed = 4; // The ESP GPIO pin to use that controls the IR LED.
 IRac ac(kIrLed);           // Create a A/C object using GPIO to sending messages with.
+
+double Thermistor(int RawADC) {
+    double Temp;
+    Temp = log(((10240000 / RawADC) - 9000));
+    Temp = 1 / (0.001129148 + (0.000234125 + (0.0000000876741 * Temp * Temp)) * Temp);
+    Temp = Temp - 273.15; // Convert Kelvin to Celcius
+    return Temp;
+}
 
 void handleLedProg() { // gets what to output via the IR
     if (server.args() != 18) {
@@ -55,10 +64,15 @@ void handleLedProg() { // gets what to output via the IR
 }
 
 void handleSendData() { // for sending data like sensors etc
-    a++;
-    char str[10];
-    sprintf(str, "%d", a);
-    server.send(200, "text", str);
+    // a++;
+    double sensorValue = 0;
+    for (size_t i = 0; i < 10; i++) {
+        sensorValue += Thermistor(analogRead(A0));
+    }
+    sensorValue /= 10;
+    // sprintf(str, "%d", sensorValue);
+    String s = String(sensorValue, 3);
+    server.send(200, "text", s);
 }
 
 void handleRoot() { // root of server
@@ -128,9 +142,9 @@ void tryToConnect(String s, String p) {
 
         Serial.print("Soft-AP IP address = ");
         Serial.println(WiFi.softAPIP());
-    }else{
-    Serial.print("IP address: ");
-    Serial.println(WiFi.localIP());
+    } else {
+        Serial.print("IP address: ");
+        Serial.println(WiFi.localIP());
     }
 }
 
@@ -138,7 +152,7 @@ void tryToConnect(String s, String p) {
 void setup() {
     Serial.begin(115200);
     delay(2000);
-    pinMode(16, OUTPUT);
+    pinMode(LED, OUTPUT);
     digitalWrite(16, HIGH);
 
     // wifi_login log{.ssid = "", .password = ""};
@@ -206,8 +220,8 @@ void setup() {
 }
 bool led = false;
 void loop() {
-    digitalWrite(16, LOW);
-    digitalWrite(16, HIGH);
+    digitalWrite(LED, LOW);
+    digitalWrite(LED, HIGH);
     led = !led;
     ArduinoOTA.handle();
     server.handleClient();
