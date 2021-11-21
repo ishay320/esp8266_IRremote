@@ -15,8 +15,8 @@
 #define LED 16
 #define SSID_POS 0
 #define CONNECTION_TIME_TRY 50
-const char *ssid = "Bspot0856_2.4_plus";
-const char *password = "7C000856";
+const char *ssid = "ssid";
+const char *password = "pass";
 
 typedef struct {
     String ssid;
