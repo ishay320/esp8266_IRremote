@@ -35,6 +35,8 @@ const uint16_t kIrLed = 4;
 if you want to send sensor data to the user add it to function `handleSendData()`<br>
 in order to change the html files, change them in `html_files` folder and then run `make_html.py`
 
+for testing your protocol type `<ip_address>/test` and then refresh until a protocol works
+
 ## the project goals:
 
 - Running server

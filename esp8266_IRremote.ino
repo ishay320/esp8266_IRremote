@@ -28,7 +28,7 @@ ESP8266WebServer server(80);
 
 const uint16_t kIrLed = 4; // The ESP GPIO pin to use that controls the IR LED.
 IRac ac(kIrLed);           // Create a A/C object using GPIO to sending messages with.
-
+int protocol_index = 0;
 double Thermistor(int RawADC) {
     double Temp;
     Temp = log(((10240000 / RawADC) - 9000));
@@ -75,6 +75,32 @@ void handleSendData() { // for sending data like sensors etc
 
 void handleRoot() { // root of server
     server.send(200, "html", html_menu);
+}
+void handleTest() {
+    for (;; ) {
+        if (protocol_index == kLastDecodeType) {
+            protocol_index = 0;
+            printf("reset\n");
+        }
+        protocol_index++;
+        decode_type_t protocol = (decode_type_t)protocol_index;
+        // If the protocol is supported by the IRac class ...
+        if (ac.isProtocolSupported(protocol)) {
+            Serial.println("Protocol " + String(protocol) + " / " + typeToString(protocol) + " is supported.");
+            String out = String("Protocol : " + String(protocol) + " / " + typeToString(protocol) + protocol_index);
+            server.send(200, "html", out);
+            ac.next.protocol = protocol; // Change the protocol used.
+            ac.next.power = true;        // We want to turn on the A/C unit.
+            Serial.println("Sending a message to turn ON the A/C unit.");
+            ac.sendAc();           // Have the IRac class create and send a message.
+            delay(5000);           // Wait 5 seconds.
+            ac.next.power = false; // Now we want to turn the A/C off.
+            Serial.println("Send a message to turn OFF the A/C unit.");
+            ac.sendAc(); // Send the message.
+            delay(1000); // Wait 1 second.
+            break;
+        }
+    }
 }
 
 void handleIRController() { // IR controller
@@ -188,6 +214,7 @@ void setup() {
     server.on("/wifiLogin", handleLogin);
 
     server.on("/irSend", handleLedProg);
+    server.on("/test", handleTest);
     server.on("/wifiInfo", handleSSIDData);
 
     server.on("/temp", handleSendData);
