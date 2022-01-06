@@ -27,7 +27,7 @@ app.get('/getWireless', (req, res) => {
     res.json({"SSID":["first_ssid","second_ssid"]});
 })
 
-app.get('/style', (req, res) => {
+app.get('/style.css', (req, res) => {
     // send the style.css file to the user
     res.sendFile( __dirname.replace("mockupServer","html_files/style.css"));
 })

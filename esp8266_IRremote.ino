@@ -223,8 +223,8 @@ void setup() {
 
     server.on("/temp", handleSendData);
     server.on("/getWireless", handleGetWireless);
-    
-    server.on("/style", handleStyle);
+
+    server.on("/style.css", handleStyle);
     server.begin();
 
     // Set up what we want to send via the IR.
