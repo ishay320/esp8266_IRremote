@@ -232,3 +232,5 @@ const char html_wifiLogin[] = R"=====(<!DOCTYPE html>
 
 </html>)=====";
 
+const char style[] = R"=====()=====";
+

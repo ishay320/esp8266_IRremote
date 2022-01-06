@@ -111,6 +111,10 @@ void handleLogin() { // wifi setting
     server.send(200, "html", html_wifiLogin);
 }
 
+void handleStyle() { // style.css
+    server.send(200, "html", style);
+}
+
 void handleSSIDData() { // wifi setting
     wifi_login wifi = {.ssid = server.arg(0).c_str(), .password = server.arg(1).c_str()};
     Serial.printf("ssid %s, pass %s\n", wifi.ssid, wifi.password);
@@ -219,6 +223,8 @@ void setup() {
 
     server.on("/temp", handleSendData);
     server.on("/getWireless", handleGetWireless);
+    
+    server.on("/style", handleStyle);
     server.begin();
 
     // Set up what we want to send via the IR.
