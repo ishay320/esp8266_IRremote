@@ -5,10 +5,39 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     <title>IR controller</title>
 </head>
 
 <body>
+    <h1 class="title">IR controller</h1>
+    <div class="body">
+        <div class="cards-line">
+            <div class="card">
+                <i class="material-icons card-icon">power</i>
+                <span class="card-title">Power</span>
+            </div>
+        </div>
+        <div class="cards-line">
+            <div class="card-slider">
+                <span>Temperature:</span>
+                <input type="range" min="1" max="100" value="50" class="slider" id="myRange">
+            </div>
+        </div>
+        <div class="cards-line">
+            <div class="card">
+                <i class="material-icons card-icon">power</i>
+                <span class="card-title">data</span>
+            </div>
+            <div class="card">
+                <i class="material-icons card-icon">power</i>
+                <span class="card-title">data</span>
+            </div>
+        </div>
+    </div>
+
+
     <form action="/irSend" method="GET">
         <label for="protocol">protocol</label>
         <input type="number" id="protocol" name="protocol" value="18"><br><br>
@@ -96,7 +125,7 @@
 
 
     <!-- TODO: add sensor -->
-    <script>
+    <!-- <script>
         setInterval(function () {
             var xhttp = new XMLHttpRequest();
             xhttp.onreadystatechange = function () {
@@ -108,7 +137,7 @@
             xhttp.open("GET", "/temp", true);
             xhttp.send();
         }, 1000);
-    </script>
+    </script> -->
 </body>
 
 </html>
