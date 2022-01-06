@@ -176,6 +176,7 @@ const char html_wifiLogin[] = R"=====(<!DOCTYPE html>
   <meta http-equiv='X-UA-Compatible' content='IE=edge'>
   <title>Wifi Config</title>
   <meta name='viewport' content='width=device-width, initial-scale=1'>
+  <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
