@@ -27,16 +27,61 @@
         </div>
         <div class="cards-line">
             <div class="card">
-                <i class="material-icons card-icon">power</i>
-                <span class="card-title">data</span>
+                <i class="icon-choose">
+                    <!-- TODO: add more modes -->
+                    <i class="material-icons card-icon">ac_unit</i>
+                    <i style="display: none;" class="material-icons card-icon">local_fire_department</i>
+                </i>
+
+                <span class="card-title">mode</span>
             </div>
             <div class="card">
-                <i class="material-icons card-icon">power</i>
-                <span class="card-title">data</span>
+                <i class="icon-choose">
+                    <!-- TODO: choose more icons that fit -->
+                    <i class="material-icons card-icon">air</i>
+                    <!-- <i style="display: none;" class="material-icons card-icon">nightlight</i> -->
+                </i>
+                <span class="card-title">fan</span>
+            </div>
+        </div>
+        <div class="cards-line">
+            <div class="card">
+                <i class="icon-choose">
+                    <i class="material-icons card-icon">volume_up</i>
+                    <i style="display: none;" class="material-icons card-icon">volume_off</i>
+                </i>
+
+                <span class="card-title">sound</span>
+            </div>
+            <div class="card">
+                <i class="icon-choose">
+                    <i class="material-icons card-icon">light_mode</i>
+                    <i style="display: none;" class="material-icons card-icon">nightlight</i>
+                </i>
+                <span class="card-title">screen</span>
+            </div>
+        </div>
+        <div class="cards-line">
+            <div class="card">
+                <i class="material-icons card-icon">update</i>
+                <span class="card-title">timer</span>
+            </div>
+            <div class="card">
+                    <i class="material-icons card-icon">add</i>
+                <span class="card-title">custom</span>
             </div>
         </div>
     </div>
-
+    <script>
+        function myFunction() {
+            var x = document.getElementById("myDIV");
+            if (x.style.display === "none") {
+                x.style.display = "block";
+            } else {
+                x.style.display = "none";
+            }
+        }
+    </script>
 
     <form action="/irSend" method="GET">
         <label for="protocol">protocol</label>
