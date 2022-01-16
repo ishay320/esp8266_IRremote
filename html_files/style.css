@@ -1,25 +1,30 @@
-body {
-    background-color: lightblue;
+:root {
+    --bg-color: lightblue;
+    background-color: var(--bg-color);
+    font-size: 2vw;
 }
 .title {
-    position: fixed;
-    background-color: lightblue;
+    position: sticky;
+    background-color: var(--bg-color);
     color: black;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    margin-left: 40%;
-    margin-top: -5%;
+    font-size: 3em;
+    text-align: center;
+    top: 0;
+    width: 100%;
     z-index: 1;
 }
 div.body {
-    margin-top: 6%;
     padding: 10px;
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    /* justify-content: center; */
     align-items: center;
 }
-.cards-line{
-    display: flex;
+.card-grid{
+    display: grid;
+    grid-template-columns: auto auto;
+    font-size: 2em;
 }
 .card {
     margin: 5px;
@@ -36,23 +41,16 @@ div.card:hover {
     text-shadow: 5px 5px 6px rgb(63, 62, 62);
 }
 
-.card-title {
-    font-size: x-large;
-}
-.card-icon {
+i.card-icon {
     position: relative;
     translate: 50px;
-    top: 3px;
+    font-size: 1em;
+    top: 0.2em;
 }
 .card-slider {
-    margin: 5px;
-    background-color: grey;
-    padding: 5px 10px 10px 10px; 
-    border-radius: 10px;
-    border: 2px solid grey;
     transition-duration: 0.4s;
-    color: white; 
-    width: 150%;
+    font-size: 0.5em;
+    width:40vw;
 }
 .card-slider:hover {
     background-color: rgb(110, 110, 110);
@@ -80,13 +78,5 @@ div.card:hover {
     height: 25px;
     border-radius: 50%; 
     background: #222222;
-    cursor: pointer;
-}
-    
-.slider::-moz-range-thumb {
-    width: 25px;
-    height: 25px;
-    border-radius: 50%;
-    background: #04AA6D;
     cursor: pointer;
 }
