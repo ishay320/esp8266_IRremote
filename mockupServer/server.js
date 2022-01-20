@@ -9,7 +9,12 @@ server.on("/wifiInfo", handleSSIDData); // need to receive SSID and pass
 
 server.on("/temp", handleSendData); // send temp
  */
-
+app.use(
+    express.urlencoded({
+      extended: true
+    })
+  )
+  
 app.get('/', (req, res) => {
     res.sendFile( __dirname.replace("mockupServer","html_files/html_menu.html"));
 })
@@ -25,8 +30,9 @@ app.get('/wifiLogin', (req, res) => {
     res.sendFile( __dirname.replace("mockupServer","html_files/html_wifiLogin.html"));
 })
 
-app.get('/irSend', (req, res) => {
-    console.log(req.body)
+app.post('/irSend', (req, res) => {
+    console.log('Got body:', req.body);
+    // console.log(res)
     res.json({"OK":1});
 })
 
