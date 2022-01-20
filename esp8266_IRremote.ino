@@ -77,7 +77,7 @@ void handleRoot() { // root of server
     server.send(200, "html", html_menu);
 }
 void handleTest() {
-    for (;; ) {
+    for (;;) {
         if (protocol_index == kLastDecodeType) {
             protocol_index = 0;
             printf("reset\n");
@@ -105,6 +105,10 @@ void handleTest() {
 
 void handleIRController() { // IR controller
     server.send(200, "html", html_IRController);
+}
+
+void handleIRControllerJS() { // IR controller js
+    server.send(200, "html", IRcontroller);
 }
 
 void handleLogin() { // wifi setting
@@ -214,7 +218,10 @@ void setup() {
 
     server.begin();
     server.on("/", handleRoot);
+
     server.on("/irController", handleIRController);
+    server.on("/IRcontroller.js", handleIRControllerJS);
+
     server.on("/wifiLogin", handleLogin);
 
     server.on("/irSend", handleLedProg);

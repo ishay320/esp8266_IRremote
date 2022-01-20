@@ -13,13 +13,22 @@ server.on("/temp", handleSendData); // send temp
 app.get('/', (req, res) => {
     res.sendFile( __dirname.replace("mockupServer","html_files/html_menu.html"));
 })
+
 app.get('/irController', (req, res) => {
     res.sendFile( __dirname.replace("mockupServer","html_files/html_IRController.html"));
 })
+app.get('/IRcontroller.js', (req, res) => {
+    res.sendFile( __dirname.replace("mockupServer","html_files/IRcontroller.js"));
+})
+
 app.get('/wifiLogin', (req, res) => {
     res.sendFile( __dirname.replace("mockupServer","html_files/html_wifiLogin.html"));
 })
 
+app.get('/irSend', (req, res) => {
+    console.log(req.body)
+    res.json({"OK":1});
+})
 
 
 app.get('/getWireless', (req, res) => {

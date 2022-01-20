@@ -12,10 +12,79 @@ const char html_IRController[] = R"=====(<!DOCTYPE html>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <script src="IRcontroller.js" defer></script>
     <title>IR controller</title>
 </head>
 
 <body>
+    <h1 class="title">IR controller</h1>
+    <div class="body">
+        <div class="card-grid">
+            <div class="card" id="power">
+                <i class="material-icons card-icon">power</i>
+                <span class="card-title">Power</span>
+            </div>
+        </div>
+        <div class="card-grid">
+            <div class="card-slider card" id=temperature>
+                <span>Temperature:</span>
+                <input type="range" min="1" max="100" value="50" class="slider" id="myRange">
+            </div>
+        </div>
+        <div class="card-grid">
+            <div class="card" id="mode">
+                <i class="icon-choose">
+                    <!-- TODO: add more modes -->
+                    <i class="material-icons card-icon">ac_unit</i>
+                    <i style="display: none;" class="material-icons card-icon">local_fire_department</i>
+                </i>
+                <span class="card-title">mode</span>
+            </div>
+            <div class="card" id="fan">
+                <i class="icon-choose">
+                    <!-- TODO: choose more icons that fit -->
+                    <i class="material-icons card-icon">air</i>
+                    <!-- <i style="display: none;" class="material-icons card-icon">nightlight</i> -->
+                </i>
+                <span class="card-title">fan</span>
+            </div>
+            <div class="card" id="sound">
+                <i class="icon-choose">
+                    <i class="material-icons card-icon">volume_up</i>
+                    <i style="display: none;" class="material-icons card-icon">volume_off</i>
+                </i>
+                <span class="card-title">sound</span>
+            </div>
+            <div class="card" id="screen">
+                <i class="icon-choose">
+                    <i class="material-icons card-icon">light_mode</i>
+                    <i style="display: none;" class="material-icons card-icon">nightlight</i>
+                </i>
+                <span class="card-title">screen</span>
+            </div>
+            <div class="card" id="timer">
+                <i class="material-icons card-icon">update</i>
+                <span class="card-title">timer</span>
+            </div>
+            <div class="card" id="custom">
+                <i class="material-icons card-icon">add</i>
+                <span class="card-title">custom</span>
+            </div>
+        </div>
+    </div>
+    <script>
+        function myFunction() {
+            var x = document.getElementById("myDIV");
+            if (x.style.display === "none") {
+                x.style.display = "block";
+            } else {
+                x.style.display = "none";
+            }
+        }
+    </script>
+
     <form action="/irSend" method="GET">
         <label for="protocol">protocol</label>
         <input type="number" id="protocol" name="protocol" value="18"><br><br>
@@ -103,7 +172,7 @@ const char html_IRController[] = R"=====(<!DOCTYPE html>
 
 
     <!-- TODO: add sensor -->
-    <script>
+    <!-- <script>
         setInterval(function () {
             var xhttp = new XMLHttpRequest();
             xhttp.onreadystatechange = function () {
@@ -115,7 +184,7 @@ const char html_IRController[] = R"=====(<!DOCTYPE html>
             xhttp.open("GET", "/temp", true);
             xhttp.send();
         }, 1000);
-    </script>
+    </script> -->
 </body>
 
 </html>)=====";
@@ -233,5 +302,137 @@ const char html_wifiLogin[] = R"=====(<!DOCTYPE html>
 
 </html>)=====";
 
-const char style[] = R"=====()=====";
+const char style[] = R"=====(:root {
+    --bg-color: lightblue;
+    background-color: var(--bg-color);
+    font-size: 2vw;
+}
+.title {
+    position: sticky;
+    background-color: var(--bg-color);
+    color: black;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 3em;
+    text-align: center;
+    top: 0;
+    margin-top: 0;
+    margin-bottom: 0;
+    width: 100%;
+    z-index: 1;
+}
+.body {
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    /* justify-content: center; */
+    align-items: center;
+}
+.card-grid{
+    display: grid;
+    grid-template-columns: auto auto;
+    font-size: 2em;
+}
+.card {
+    margin: 5px;
+    background-color: grey;
+    padding: 5px 10px 10px 10px; 
+    border-radius: 10px;
+    border: 2px solid grey;
+    transition-duration: 0.4s;
+    color: white; 
+    cursor: pointer;
+}
+.card:hover {
+    background-color: lightgray;
+    text-shadow: 5px 5px 6px rgb(63, 62, 62);
+}
+
+i.card-icon {
+    position: relative;
+    translate: 50px;
+    font-size: 1em;
+    top: 0.2em;
+}
+.card-slider {
+    transition-duration: 0.4s;
+    font-size: 0.5em;
+    width:40vw;
+}
+.card-slider:hover {
+    background-color: rgb(110, 110, 110);
+    text-shadow: 5px 5px 6px rgb(63, 62, 62);
+}
+.slider {
+    margin: 5px;
+    -webkit-appearance: none;
+    width: 100%;
+    height: 15px;
+    border-radius: 5px;
+    background: #f5f5f5;
+    outline: none;
+    opacity: 0.7;
+    -webkit-transition: .2s;
+    transition: opacity .2s;
+}
+.slider:hover {
+    opacity: 1;
+}   
+.slider::-webkit-slider-thumb{
+    -webkit-appearance: none;
+    appearance: none;
+    width: 25px;
+    height: 25px;
+    border-radius: 50%; 
+    background: #222222;
+    cursor: pointer;
+})=====";
+
+const char IRcontroller[] = R"=====(ACproperty = {
+    "protocol": 18,
+    "model": 1,
+    "mode": 0,
+    "celsius": 1,
+    "degrees": 23,
+    "fanspeed": 0,
+    "swingv": -1,
+    "swingh": -1,
+    "light": 1,
+    "beep": 1,
+    "econo": 1,
+    "filter": 1,
+    "turbo": 0,
+    "quiet": 0,
+    "sleep": -1,
+    "clean": 1,
+    "clock": -1,
+    "power": 1
+}
+
+function click(evt) {
+    // alert(evt.currentTarget["id"]);
+    if (ACproperty[evt.currentTarget["id"]] == 1) {
+        ACproperty[evt.currentTarget["id"]] = 0
+        evt.currentTarget.getElementsByClassName("card-icon")[0].style.color = "red"
+    } else {
+        ACproperty[evt.currentTarget["id"]] = 1
+        evt.currentTarget.getElementsByClassName("card-icon")[0].style.color = "green"
+    }
+    httpGet()
+
+}
+// TODO: send as: /irSend?protocol=18&model=1&mode=0&celsius=1&degrees=23&fanspeed=0&swingv=-1&swingh=-1&light=1&beep=1&econo=1&filter=1&turbo=0&quiet=0&sleep=-1&clean=1&clock=-1&power=1
+// or as json - but change the esp code <- better
+function httpGet() {
+    var xmlHttp = new XMLHttpRequest();
+    xmlHttp.open("GET", "/irSend", false); // false for synchronous request
+    // xmlhttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+    xmlHttp.send(ACproperty);
+    return xmlHttp.responseText;
+}
+const collection = document.getElementsByClassName("card");
+[].forEach.call(collection, function (element) {
+    element.addEventListener("click", click)
+});
+
+)=====";
 
