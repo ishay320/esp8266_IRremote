@@ -1,22 +1,160 @@
-ACproperty = {
-    "protocol": 18,
-    "model": 1,
-    "mode": 0,
-    "celsius": 1,
-    "degrees": 23,
-    "fanspeed": 0,
-    "swingv": -1,
-    "swingh": -1,
-    "light": 1,
-    "beep": 1,
-    "econo": 1,
-    "filter": 1,
-    "turbo": 0,
-    "quiet": 0,
-    "sleep": -1,
-    "clean": 1,
-    "clock": -1,
-    "power": 1
+// TODO:
+// - fix the sending with the new DB
+// - make the slider integrated to the rest (2 colum of button 1 for slider)
+// - hide unwanted buttons (add hide to db?)
+// - make the switches work with more icons (add array to icons arr?)
+// - DB check the real values
+
+// - CSS+html(+function) -> add numbers to the sliders
+
+
+// ACproperty = {
+//     "protocol": 18,
+//     "model": 1,
+//     "mode": 0,
+//     "celsius": 1,
+//     "degrees": 23,
+//     "fanspeed": 0,
+//     "swingv": -1,
+//     "swingh": -1,
+//     "light": 1,
+//     "beep": 1,
+//     "econo": 1,
+//     "filter": 1,
+//     "turbo": 0,
+//     "quiet": 0,
+//     "sleep": -1,
+//     "clean": 1,
+//     "clock": -1,
+//     "power": 1
+// }
+
+// function?
+var ACproperty = {
+    "protocol": {//X
+        "active": 18,
+        "range-int": [1, 100] //TODO: enter the real value
+    },
+    "model": { //X
+        "active": 1,
+        "range-int": [1, 100] //TODO: enter the real value
+    },
+    "mode": {
+        "active": "off",
+        "switch": {
+            "Off": -1,
+            "Auto": 0,
+            "Cool": 1,
+            "Heat": 2,
+            "Dry": 3,
+            "Fan": 4
+        },
+    },
+    "celsius": {
+        "active": 1,
+        "bool": 0,
+    },
+    "degrees": { //X
+        "active": 26,
+        "range-float": [16, 40]
+    },
+    "fanspeed": {
+        "active": "Auto",
+        "switch": {
+            "Auto": 0,
+            "Min": 1,
+            "Low": 2,
+            "Medium": 3,
+            "High": 4,
+            "Max": 5
+        }
+    },
+    "swingv": {
+        "active": "off",
+        "switch": {
+            "Off": -1,
+            "Auto": 0,
+            "Highest": 1,
+            "High": 2,
+            "Middle": 3,
+            "Low": 4,
+            "Lowest": 5
+        }
+    },
+    "swingh": {
+        "active": "off",
+        "switch": {
+            "Off": -1,
+            "Auto": 0,
+            "LeftMax": 1,
+            "Left": 2,
+            "Middle": 3,
+            "Right": 4,
+            "RightMax": 5,
+            "Wide": 6
+        }
+    },
+    "light": {
+        "active": 1,
+        "bool": 0,
+    },
+    "beep": {
+        "active": 1,
+        "bool": 0,
+    },
+    "econo": {
+        "active": 1,
+        "bool": 0,
+    },
+    "filter": {
+        "active": 1,
+        "bool": 0,
+    },
+    "turbo": {
+        "active": 0,
+        "bool": 0,
+    },
+    "quiet": {
+        "active": 0,
+        "bool": 0,
+    },
+    "sleep": { //X
+        "active": -1,
+        "range-int": [1, 100] //TODO: enter the real value
+    },
+    "clean": {
+        "active": 1,
+        "bool": 0,
+    },
+    "clock": { //X
+        "active": -1,
+        "range-int": [1, 100] //TODO: enter the real value
+    },
+    "power": {
+        "active": 1,
+        "bool": 0,
+    },
+}
+
+icons = {
+    "protocol": "",
+    "model": "",
+    "mode": "local_fire_department",
+    "celsius": "",
+    "degrees": "",
+    "fanspeed": "air",
+    "swingv": "",
+    "swingh": "",
+    "light": "nightlight",
+    "beep": "volume_off",
+    "econo": "",
+    "filter": "",
+    "turbo": "",
+    "quiet": "",
+    "sleep": "",
+    "clean": "",
+    "clock": "update",
+    "power": "power",
 }
 
 function click(evt) {
@@ -65,3 +203,88 @@ const collection = document.getElementsByClassName("card");
     element.addEventListener("click", click)
 });
 
+
+
+
+// on click -- update database , send command (maybe update esp - the send will do it)
+function bool(key, value) {
+    var card = document.createElement("div")
+    card.className = "card"
+    card.id = key
+
+    var i = document.createElement("i")
+    i.className = "material-icons card-icon"
+    i.textContent = icons[key]
+
+    var span = document.createElement("span")
+    span.className = "card-title"
+    span.textContent = key
+
+    card.appendChild(i)
+    card.appendChild(span)
+    document.getElementById("card-grid").appendChild(card).addEventListener("click", click)
+
+}
+function switcher(key, value) { // TODO: make it better and working
+    var card = document.createElement("div")
+    card.className = "card"
+    card.id = key
+
+    var i = document.createElement("i")
+    i.className = "material-icons card-icon"
+    i.textContent = icons[key]
+
+    var span = document.createElement("span")
+    span.className = "card-title"
+    span.textContent = key
+
+    card.appendChild(i)
+    card.appendChild(span)
+    document.getElementById("card-grid").appendChild(card).addEventListener("click", click)
+}
+
+function range(key, value, type) {
+    var card = document.createElement("div")
+    card.className = "card-slider card"
+    card.id = key
+
+    var span = document.createElement("span")
+    span.textContent = key
+
+    var slider = document.createElement("input")
+    slider.className = "slider"
+    slider.type = "range"
+    slider.id = "myRange"
+    slider.min = value[type][0]
+    slider.max = value[type][1]
+    slider.value = ACproperty[key].active
+    slider.step = type == "range-int" ? 1 : 0.1
+
+
+    card.appendChild(span)
+    card.appendChild(slider)
+    document.getElementById("card-grid2").appendChild(card)
+}
+
+
+for (const [key, value] of Object.entries(ACproperty)) {
+    tmpKey = Object.keys(value)
+    switch (tmpKey[1]) {
+        case "bool":
+            bool(key, value)
+            break;
+        case "switch":
+            switcher(key, value)
+            break;
+        case "range-int":
+            range(key, value, tmpKey[1])
+            break;
+        case "range-float":
+            range(key, value, tmpKey[1])
+            break;
+
+        default:
+            console.log("DB ERROR: unaccessible code")
+            break;
+    }
+}
