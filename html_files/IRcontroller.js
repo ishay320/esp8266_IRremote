@@ -5,8 +5,6 @@
 // - make the switches work with more icons (add array to icons arr?)
 // - DB check the real values
 
-// - CSS+html(+function) -> add numbers to the sliders
-
 
 // ACproperty = {
 //     "protocol": 18,
@@ -251,6 +249,10 @@ function range(key, value, type) {
     var span = document.createElement("span")
     span.textContent = key
 
+    var number = document.createElement("span")
+    number.textContent = value.active
+    number.className = "slider-number"
+
     var slider = document.createElement("input")
     slider.className = "slider"
     slider.type = "range"
@@ -259,13 +261,17 @@ function range(key, value, type) {
     slider.max = value[type][1]
     slider.value = ACproperty[key].active
     slider.step = type == "range-int" ? 1 : 0.1
-
+    slider.setAttribute("onchange", "updateTextInput(this)");
 
     card.appendChild(span)
+    card.appendChild(number)
     card.appendChild(slider)
     document.getElementById("card-grid2").appendChild(card)
 }
 
+function updateTextInput(element) {
+    element.parentElement.childNodes[1].textContent = element.value
+}
 
 for (const [key, value] of Object.entries(ACproperty)) {
     tmpKey = Object.keys(value)

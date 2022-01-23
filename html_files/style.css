@@ -58,6 +58,9 @@ i.card-icon {
     background-color: rgb(110, 110, 110);
     text-shadow: 5px 5px 6px rgb(63, 62, 62);
 }
+.slider-number{
+    margin: 1em;
+}
 .slider {
     margin: 5px;
     -webkit-appearance: none;
