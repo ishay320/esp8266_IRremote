@@ -5,11 +5,34 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <script src="IRcontroller.js" defer></script>
     <title>IR controller</title>
 </head>
 
 <body>
-    <form action="/irSend" method="GET">
+    <h1 class="title">IR controller</h1>
+    <div class="body">
+        <div class="card-grid" id="card-grid">
+
+        </div>
+        <div class="card-grid" id="card-grid2">
+
+        </div>
+    </div>
+    <script>
+        function myFunction() {
+            var x = document.getElementById("myDIV");
+            if (x.style.display === "none") {
+                x.style.display = "block";
+            } else {
+                x.style.display = "none";
+            }
+        }
+    </script>
+
+    <!-- <form action="/irSend" method="GET">
         <label for="protocol">protocol</label>
         <input type="number" id="protocol" name="protocol" value="18"><br><br>
         <label for="model">model</label>
@@ -87,7 +110,7 @@
         <input type="hidden" name="power" value="1"><input type="checkbox"
             onclick="this.previousSibling.value=1-this.previousSibling.value" checked><br><br>
         <input type="submit" value="Submit">
-    </form>
+    </form> -->
 
     <form action="/">
         <br>
@@ -96,7 +119,7 @@
 
 
     <!-- TODO: add sensor -->
-    <script>
+    <!-- <script>
         setInterval(function () {
             var xhttp = new XMLHttpRequest();
             xhttp.onreadystatechange = function () {
@@ -108,7 +131,7 @@
             xhttp.open("GET", "/temp", true);
             xhttp.send();
         }, 1000);
-    </script>
+    </script> -->
 </body>
 
 </html>
