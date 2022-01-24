@@ -31,14 +31,17 @@
 var ACproperty = {
     "protocol": {//X
         "active": 18,
+        "type": "range-int",
         "range-int": [1, 100] //TODO: enter the real value
     },
     "model": { //X
         "active": 1,
+        "type": "range-int",
         "range-int": [1, 100] //TODO: enter the real value
     },
     "mode": {
-        "active": "off",
+        "active": "Off",
+        "type": "switch",
         "switch": {
             "Off": -1,
             "Auto": 0,
@@ -50,14 +53,17 @@ var ACproperty = {
     },
     "celsius": {
         "active": 1,
+        "type": "bool",
         "bool": 0,
     },
     "degrees": { //X
         "active": 26,
+        "type": "range-float",
         "range-float": [16, 40]
     },
     "fanspeed": {
         "active": "Auto",
+        "type": "switch",
         "switch": {
             "Auto": 0,
             "Min": 1,
@@ -68,7 +74,8 @@ var ACproperty = {
         }
     },
     "swingv": {
-        "active": "off",
+        "active": "Off",
+        "type": "switch",
         "switch": {
             "Off": -1,
             "Auto": 0,
@@ -80,7 +87,8 @@ var ACproperty = {
         }
     },
     "swingh": {
-        "active": "off",
+        "active": "Off",
+        "type": "switch",
         "switch": {
             "Off": -1,
             "Auto": 0,
@@ -94,42 +102,52 @@ var ACproperty = {
     },
     "light": {
         "active": 1,
+        "type": "bool",
         "bool": 0,
     },
     "beep": {
         "active": 1,
+        "type": "bool",
         "bool": 0,
     },
     "econo": {
         "active": 1,
+        "type": "bool",
         "bool": 0,
     },
     "filter": {
         "active": 1,
+        "type": "bool",
         "bool": 0,
     },
     "turbo": {
         "active": 0,
+        "type": "bool",
         "bool": 0,
     },
     "quiet": {
         "active": 0,
+        "type": "bool",
         "bool": 0,
     },
     "sleep": { //X
         "active": -1,
+        "type": "range-int",
         "range-int": [1, 100] //TODO: enter the real value
     },
     "clean": {
         "active": 1,
+        "type": "bool",
         "bool": 0,
     },
     "clock": { //X
         "active": -1,
+        "type": "range-int",
         "range-int": [1, 100] //TODO: enter the real value
     },
     "power": {
         "active": 1,
+        "type": "bool",
         "bool": 0,
     },
 }
@@ -138,36 +156,24 @@ icons = {
     "protocol": "",
     "model": "",
     "mode": "local_fire_department",
-    "celsius": "",
-    "degrees": "",
+    "celsius": "circle",
+    "degrees": "device_thermostat",
     "fanspeed": "air",
-    "swingv": "",
-    "swingh": "",
-    "light": "nightlight",
+    "swingv": "swap_horiz",
+    "swingh": "swap_vert",
+    "light": "light_mode",
     "beep": "volume_off",
-    "econo": "",
-    "filter": "",
-    "turbo": "",
-    "quiet": "",
-    "sleep": "",
-    "clean": "",
+    "econo": "spa",
+    "filter": "grain",
+    "turbo": "bolt",
+    "quiet": "volume_down",
+    "sleep": "hotel",
+    "clean": "sanitizer",
     "clock": "update",
-    "power": "power",
+    "power": "power_settings_new",
 }
 
-function click(evt) {
-    // alert(evt.currentTarget["id"]);
-    if (ACproperty[evt.currentTarget["id"]] == 1) {
-        ACproperty[evt.currentTarget["id"]] = 0
-        evt.currentTarget.getElementsByClassName("card-icon")[0].style.color = "red"
-    } else {
-        ACproperty[evt.currentTarget["id"]] = 1
-        evt.currentTarget.getElementsByClassName("card-icon")[0].style.color = "green"
-    }
-    send()
-
-}
-function send() {
+function sendData() {
     var http = new XMLHttpRequest();
     var url = '/irSend';
     http.open('POST', url, true);
@@ -183,7 +189,6 @@ function send() {
     }
     http.send(urlEncodedDataPairs.toString());
     // JSON.stringify(ACproperty)
-
 }
 
 
@@ -196,16 +201,10 @@ function httpGet() {
     xmlHttp.send(ACproperty);
     return xmlHttp.responseText;
 }
-const collection = document.getElementsByClassName("card");
-[].forEach.call(collection, function (element) {
-    element.addEventListener("click", click)
-});
-
-
 
 
 // on click -- update database , send command (maybe update esp - the send will do it)
-function bool(key, value) {
+function boolButton(key, value) {
     var card = document.createElement("div")
     card.className = "card"
     card.id = key
@@ -220,9 +219,15 @@ function bool(key, value) {
 
     card.appendChild(i)
     card.appendChild(span)
-    document.getElementById("card-grid").appendChild(card).addEventListener("click", click)
+    document.getElementById("card-grid").appendChild(card).addEventListener("click", clicked)
 
+    if (ACproperty[key].active == 1) {
+        i.style.color = "red"
+    } else {
+        i.style.color = "green"
+    }
 }
+
 function switcher(key, value) { // TODO: make it better and working
     var card = document.createElement("div")
     card.className = "card"
@@ -238,7 +243,7 @@ function switcher(key, value) { // TODO: make it better and working
 
     card.appendChild(i)
     card.appendChild(span)
-    document.getElementById("card-grid").appendChild(card).addEventListener("click", click)
+    document.getElementById("card-grid").appendChild(card).addEventListener("click", clicked)
 }
 
 function range(key, value, type) {
@@ -269,28 +274,56 @@ function range(key, value, type) {
     document.getElementById("card-grid2").appendChild(card)
 }
 
+function clicked() {
+    const id = this.id
+    switch (ACproperty[id].type) {
+        case "bool":
+            ACproperty[id].active = 1 - ACproperty[id].active
+            if (ACproperty[id].active == 1) {
+                this.getElementsByClassName("card-icon")[0].style.color = "red"
+            } else {
+                this.getElementsByClassName("card-icon")[0].style.color = "green"
+            }
+            break;
+        case "switch":
+            let keyArray = Object.keys(ACproperty[id].switch)
+            let activePos = keyArray.findIndex((e) => e == ACproperty[id].active)
+            if (activePos == keyArray.length - 1) {
+                ACproperty[id].active = keyArray[0]
+            } else {
+                ACproperty[id].active = keyArray[activePos + 1]
+            }
+            break;
+
+        default:
+            console.log("TYPE ERROR: unaccessible code", ACproperty[id].type)
+            break;
+    }
+
+    // sendData()
+}
+
 function updateTextInput(element) {
     element.parentElement.childNodes[1].textContent = element.value
 }
 
 for (const [key, value] of Object.entries(ACproperty)) {
-    tmpKey = Object.keys(value)
-    switch (tmpKey[1]) {
+    switch (value.type) {
         case "bool":
-            bool(key, value)
+            boolButton(key, value)
             break;
         case "switch":
             switcher(key, value)
             break;
         case "range-int":
-            range(key, value, tmpKey[1])
+            range(key, value, value.type)
             break;
         case "range-float":
-            range(key, value, tmpKey[1])
+            range(key, value, value.type)
             break;
 
         default:
-            console.log("DB ERROR: unaccessible code")
+            console.log("DB ERROR: unaccessible code", value)
             break;
     }
 }
