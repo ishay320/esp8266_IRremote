@@ -1,3 +1,4 @@
+// TODO: spiff: https://techtutorialsx.com/2018/09/17/esp32-arduino-web-server-serving-external-css-file/
 #include <ArduinoOTA.h>
 #include <EEPROM.h>
 #include <ESP8266mDNS.h>
@@ -39,13 +40,14 @@ double Thermistor(int RawADC) {
 
 void handleLedProg() { // gets what to output via the IR
     if (server.args() != 18) {
+        printf("ERROR: failed in handleLedProg\n");
         return;
     }
     ac.next.protocol = (decode_type_t)atoi(server.arg(0).c_str());
     ac.next.model = atoi(server.arg(1).c_str());
     ac.next.mode = (stdAc::opmode_t)atoi(server.arg(2).c_str());
     ac.next.celsius = atoi(server.arg(3).c_str());
-    ac.next.degrees = atoi(server.arg(4).c_str());
+    ac.next.degrees = (float)atof(server.arg(4).c_str()); // TODO: fix degree always 20
     ac.next.fanspeed = (stdAc::fanspeed_t)atoi(server.arg(5).c_str());
     ac.next.swingv = (stdAc::swingv_t)atoi(server.arg(6).c_str());
     ac.next.swingh = (stdAc::swingh_t)atoi(server.arg(7).c_str());
@@ -116,7 +118,7 @@ void handleLogin() { // wifi setting
 }
 
 void handleStyle() { // style.css
-    server.send(200, "html", style);
+    server.send(200, "text/css", style);
 }
 
 void handleSSIDData() { // wifi setting

@@ -1,33 +1,9 @@
 // TODO:
-// - fix the sending with the new DB
 // - make the slider integrated to the rest (2 colum of button 1 for slider)
 // - hide unwanted buttons (add hide to db?)
 // - make the switches work with more icons (add array to icons arr?)
 // - DB check the real values
 
-
-// ACproperty = {
-//     "protocol": 18,
-//     "model": 1,
-//     "mode": 0,
-//     "celsius": 1,
-//     "degrees": 23,
-//     "fanspeed": 0,
-//     "swingv": -1,
-//     "swingh": -1,
-//     "light": 1,
-//     "beep": 1,
-//     "econo": 1,
-//     "filter": 1,
-//     "turbo": 0,
-//     "quiet": 0,
-//     "sleep": -1,
-//     "clean": 1,
-//     "clock": -1,
-//     "power": 1
-// }
-
-// function?
 var ACproperty = {
     "protocol": {//X
         "active": 18,
@@ -133,7 +109,7 @@ var ACproperty = {
     "sleep": { //X
         "active": -1,
         "type": "range-int",
-        "range-int": [1, 100] //TODO: enter the real value
+        "range-int": [-1, 100] //TODO: enter the real value
     },
     "clean": {
         "active": 1,
@@ -143,7 +119,7 @@ var ACproperty = {
     "clock": { //X
         "active": -1,
         "type": "range-int",
-        "range-int": [1, 100] //TODO: enter the real value
+        "range-int": [-1, 100] //TODO: enter the real value
     },
     "power": {
         "active": 1,
@@ -175,32 +151,21 @@ icons = {
 
 function sendData() {
     var http = new XMLHttpRequest();
-    var url = '/irSend';
+    let urlEncodedDataPairs = [], name;
+    for (name in ACproperty) {
+        urlEncodedDataPairs.push(encodeURIComponent(name) + '=' + encodeURIComponent(ACproperty[name].active));
+    }
+    var url = '/irSend?' + urlEncodedDataPairs.toString().replaceAll(',', '&');
     http.open('POST', url, true);
     http.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
     http.onreadystatechange = function () {//Call a function when the state changes.
         if (http.readyState == 4 && http.status == 200) {
-            alert(http.responseText); // TODO: replace with toast ?-> https://www.w3schools.com/howto/howto_js_snackbar.asp
+            //alert(http.responseText); // TODO: replace with toast ?-> https://www.w3schools.com/howto/howto_js_snackbar.asp
         }
     }
-    let urlEncodedDataPairs = [], name;
-    for (name in ACproperty) {
-        urlEncodedDataPairs.push(encodeURIComponent(name) + '=' + encodeURIComponent(ACproperty[name]));
-    }
-    http.send(urlEncodedDataPairs.toString());
-    // JSON.stringify(ACproperty)
+    http.send();
 }
 
-
-// TODO: send as: /irSend?protocol=18&model=1&mode=0&celsius=1&degrees=23&fanspeed=0&swingv=-1&swingh=-1&light=1&beep=1&econo=1&filter=1&turbo=0&quiet=0&sleep=-1&clean=1&clock=-1&power=1
-// or as json - but change the esp code <- better
-function httpGet() {
-    var xmlHttp = new XMLHttpRequest();
-    xmlHttp.open("GET", "/irSend", false); // false for synchronous request
-    // xmlhttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-    xmlHttp.send(ACproperty);
-    return xmlHttp.responseText;
-}
 
 
 // on click -- update database , send command (maybe update esp - the send will do it)
@@ -221,14 +186,14 @@ function boolButton(key, value) {
     card.appendChild(span)
     document.getElementById("card-grid").appendChild(card).addEventListener("click", clicked)
 
-    if (ACproperty[key].active == 1) {
+    if (ACproperty[key].active == 0) {
         i.style.color = "red"
     } else {
         i.style.color = "green"
     }
 }
 
-function switcher(key, value) { // TODO: make it better and working
+function switcher(key, value) { // TODO: join with boolButton
     var card = document.createElement("div")
     card.className = "card"
     card.id = key
@@ -249,7 +214,6 @@ function switcher(key, value) { // TODO: make it better and working
 function range(key, value, type) {
     var card = document.createElement("div")
     card.className = "card-slider card"
-    card.id = key
 
     var span = document.createElement("span")
     span.textContent = key
@@ -261,7 +225,7 @@ function range(key, value, type) {
     var slider = document.createElement("input")
     slider.className = "slider"
     slider.type = "range"
-    slider.id = "myRange"
+    slider.id = key
     slider.min = value[type][0]
     slider.max = value[type][1]
     slider.value = ACproperty[key].active
@@ -279,7 +243,7 @@ function clicked() {
     switch (ACproperty[id].type) {
         case "bool":
             ACproperty[id].active = 1 - ACproperty[id].active
-            if (ACproperty[id].active == 1) {
+            if (ACproperty[id].active == 0) {
                 this.getElementsByClassName("card-icon")[0].style.color = "red"
             } else {
                 this.getElementsByClassName("card-icon")[0].style.color = "green"
@@ -300,11 +264,13 @@ function clicked() {
             break;
     }
 
-    // sendData()
+    sendData()
 }
 
 function updateTextInput(element) {
     element.parentElement.childNodes[1].textContent = element.value
+    ACproperty[element.id].active = element.value
+    sendData()
 }
 
 for (const [key, value] of Object.entries(ACproperty)) {
