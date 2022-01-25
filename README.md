@@ -7,9 +7,9 @@ Right now the project:
 - Connect to the internet.
 - Show a control page to the user.
 - Control any AC unit.
-- Reupload the code remotely.
-- if cannot connect to the wifi it open AP at `address = 192.168.4.22`
-- send temperature to the client
+- Reupload the code remotely via OTA.
+- if cannot connect to the wifi it open AP at `address = 192.168.4.22`.
+- send temperature to the client.
 
 # How to use
 
@@ -43,14 +43,16 @@ for testing your protocol type `<ip_address>/test` and then refresh until a prot
 - Control IR
 - Reconfigure the WIFI on the fly
 - To be able to add more sensors or controllers
-- full OTA support
+- Full OTA support
+- Have good UI
+- Connect to app or have static ip for remote connection
 
 ## done:
 
 - Running server
 - Control IR
-- full OTA support via arduinoIDE
-- python script that makes html files to .h
-- if cannot connect to the wifi it open AP at `address = 192.168.4.22`
-- temperature sensor (analog)
+- Full OTA support via arduinoIDE
+- Python script that makes html files to .h
+- If cannot connect to the wifi it open AP at `address = 192.168.4.22`
+- Temperature sensor (analog)
 - Reconfigure the WIFI on the fly - (but not save...)
