@@ -1,0 +1,15 @@
+{
+    "background_color": "blue",
+    "description": "control AC",
+    "display": "standalone",
+    "icons": [
+      {
+        "src": "https://image.flaticon.com/icons/png/512/114/114735.png",
+        "sizes": "512x512",
+        "type": "image/png"
+      }
+    ],
+    "name": "AC controller",
+    "short_name": "AC",
+    "start_url": "html_IRController.html"
+  }

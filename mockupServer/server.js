@@ -19,7 +19,7 @@ app.get('/', (req, res) => {
     res.sendFile( __dirname.replace("mockupServer","html_files/html_menu.html"));
 })
 
-app.get('/irController', (req, res) => {
+app.get('/html_IRController.html', (req, res) => {
     res.sendFile( __dirname.replace("mockupServer","html_files/html_IRController.html"));
 })
 app.get('/IRcontroller.js', (req, res) => {
@@ -28,6 +28,14 @@ app.get('/IRcontroller.js', (req, res) => {
 
 app.get('/wifiLogin', (req, res) => {
     res.sendFile( __dirname.replace("mockupServer","html_files/html_wifiLogin.html"));
+})
+
+// PWA  
+app.get('/manifest.json', (req, res) => {
+    res.sendFile( __dirname.replace("mockupServer","html_files/manifest.json"));
+})
+app.get('/sw.js', (req, res) => {
+    res.sendFile( __dirname.replace("mockupServer","html_files/sw.js"));
 })
 
 app.post('/irSend', (req, res) => {

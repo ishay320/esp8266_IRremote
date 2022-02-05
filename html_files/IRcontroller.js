@@ -305,3 +305,9 @@ function toast(text) {
     //TODO: add var timeout (in css)
     setTimeout(function () { t.className = t.className.replace("show", ""); }, 3 * 1000);
 }
+
+if ('serviceWorker' in navigator) {
+    navigator.serviceWorker
+      .register('sw.js')
+      .then(() => { console.log('Service Worker Registered'); });
+  }

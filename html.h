@@ -15,6 +15,7 @@ const char html_IRController[] = R"=====(<!DOCTYPE html>
     <link rel="stylesheet" type="text/css" href="style.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     <script src="IRcontroller.js" defer></script>
+    <link rel="manifest" href="manifest.json">
     <title>IR controller</title>
 </head>
 
@@ -157,7 +158,7 @@ const char html_menu[] = R"=====(<!DOCTYPE html>
 <body>
     <h2>Welcome to esp server</h2>
 
-    <form action="/irController">
+    <form action="/html_IRController.html">
         <br>
         <button>IR Controller</button>
 
@@ -683,5 +684,43 @@ function toast(text) {
     //TODO: add var timeout (in css)
     setTimeout(function () { t.className = t.className.replace("show", ""); }, 3 * 1000);
 }
-)=====";
+
+if ('serviceWorker' in navigator) {
+    navigator.serviceWorker
+      .register('sw.js')
+      .then(() => { console.log('Service Worker Registered'); });
+  })=====";
+
+const char sw[] = R"=====(self.addEventListener('install', (e) => {
+    e.waitUntil(
+      caches.open('fox-store').then((cache) => cache.addAll([
+        'html_IRController.html',
+        'IRcontroller.js',
+        'style.css',
+      ])),
+    );
+  });
+  
+  self.addEventListener('fetch', (e) => {
+    console.log(e.request.url);
+    e.respondWith(
+      caches.match(e.request).then((response) => response || fetch(e.request)),
+    );
+  });)=====";
+
+const char manifest[] = R"=====({
+    "background_color": "blue",
+    "description": "control AC",
+    "display": "standalone",
+    "icons": [
+      {
+        "src": "https://image.flaticon.com/icons/png/512/114/114735.png",
+        "sizes": "512x512",
+        "type": "image/png"
+      }
+    ],
+    "name": "AC controller",
+    "short_name": "AC",
+    "start_url": "html_IRController.html"
+  })=====";
 

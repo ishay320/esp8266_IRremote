@@ -39,20 +39,16 @@ for testing your protocol type `<ip_address>/test` and then refresh until a prot
 
 ## the project goals:
 
-- Running server
-- Control IR
-- Reconfigure the WIFI on the fly
-- To be able to add more sensors or controllers
-- Full OTA support
-- Have good UI
-- Connect to app or have static ip for remote connection
+- [x] Running server
+- [x] Control IR
+- [ ] Reconfigure the WIFI on the fly (partly done - not saving after restart)
+- [ ] To be able to add more sensors or controllers with web interface
+- [x] Full OTA support
+- [ ] Have good UI
+- [ ] Connect to app or have static ip for remote connection
+- [x] PWA (Progressive Web Application) (in progress to be little better)
+- [x] If cannot connect to the wifi it open AP at `address = 192.168.4.22`
+- [x] Python script that makes html files to .h - (maybe use spiff in future)
+- [x] Temperature sensor (analog)
 
-## done:
 
-- Running server
-- Control IR
-- Full OTA support via arduinoIDE
-- Python script that makes html files to .h
-- If cannot connect to the wifi it open AP at `address = 192.168.4.22`
-- Temperature sensor (analog)
-- Reconfigure the WIFI on the fly - (but not save...)

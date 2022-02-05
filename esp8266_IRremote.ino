@@ -122,6 +122,14 @@ void handleStyle() { // style.css
     server.send(200, "text/css", style);
 }
 
+void handleManifest() { // manifest.json
+    server.send(200, "text/json", manifest);
+}
+
+void handleSw() { // sw.js
+    server.send(200, "html", sw);
+}
+
 void handleSSIDData() { // wifi setting
     wifi_login wifi = {.ssid = server.arg(0).c_str(), .password = server.arg(1).c_str()};
     Serial.printf("ssid %s, pass %s\n", wifi.ssid, wifi.password);
@@ -222,7 +230,7 @@ void setup() {
     server.begin();
     server.on("/", handleRoot);
 
-    server.on("/irController", handleIRController);
+    server.on("/html_IRController.html", handleIRController);
     server.on("/IRcontroller.js", handleIRControllerJS);
 
     server.on("/wifiLogin", handleLogin);
@@ -235,6 +243,11 @@ void setup() {
     server.on("/getWireless", handleGetWireless);
 
     server.on("/style.css", handleStyle);
+
+    // PWA
+    server.on("/manifest.json", handleManifest);
+    server.on("/sw.js", handleSw);
+
     server.begin();
 
     // Set up what we want to send via the IR.

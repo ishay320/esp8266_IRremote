@@ -17,6 +17,7 @@ def html_files_in_folder(path: str) -> list[str]:
     filenames = glob.glob(path + '/*.html')
     filenames += glob.glob(path + '/*.css')
     filenames += glob.glob(path + '/*.js')
+    filenames += glob.glob(path + '/*.json')
     return filenames
 
 
