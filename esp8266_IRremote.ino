@@ -41,6 +41,7 @@ double Thermistor(int RawADC) {
 void handleLedProg() { // gets what to output via the IR
     if (server.args() != 18) {
         printf("ERROR: failed in handleLedProg\n");
+        server.send(200, "json", "{\"OK\":0}");
         return;
     }
     ac.next.protocol = (decode_type_t)atoi(server.arg(0).c_str());
@@ -61,8 +62,8 @@ void handleLedProg() { // gets what to output via the IR
     ac.next.clean = atoi(server.arg(15).c_str());
     ac.next.clock = atoi(server.arg(16).c_str()); //-1 for off
     ac.next.power = atoi(server.arg(17).c_str());
-    ac.sendAc(); // Send the message.
-    server.send(200, "text", "sent seccesfuly!");
+    ac.sendAc(); // Send the message to the ac.
+    server.send(200, "json", "{\"OK\":1}");
 }
 
 void handleSendData() { // for sending data like sensors etc
@@ -243,7 +244,7 @@ void setup() {
     ac.next.model = 1;                             // Some A/Cs have different models. Try just the first.
     ac.next.mode = stdAc::opmode_t::kCool;         // Run in cool mode initially.
     ac.next.celsius = true;                        // Use Celsius for temp units. False = Fahrenheit
-    ac.next.degrees = 23;                          // 25 degrees.
+    ac.next.degrees = 23;                          // 23 degrees.
     ac.next.fanspeed = stdAc::fanspeed_t::kMedium; // Start the fan at medium.
     ac.next.swingv = stdAc::swingv_t::kOff;        // Don't swing the fan up or down.
     ac.next.swingh = stdAc::swingh_t::kOff;        // Don't swing the fan left or right.

@@ -28,6 +28,7 @@ const char html_IRController[] = R"=====(<!DOCTYPE html>
 
         </div>
     </div>
+    <div id="toast-massage"></div>
     <script>
         function myFunction() {
             var x = document.getElementById("myDIV");
@@ -342,7 +343,38 @@ i.card-icon {
     border-radius: 50%; 
     background: #222222;
     cursor: pointer;
-})=====";
+}
+
+/* The toast */
+#toast-massage {
+    visibility: hidden;
+    min-width: 250px;
+    margin-left: -125px;
+    background-color: #333;
+    color: #fff;
+    text-align: center;
+    border-radius: 2px;
+    padding: 16px;
+    position: fixed;
+    z-index: 1;
+    left: 50%;
+    bottom: 30px;
+  }
+
+  #toast-massage.show {
+    visibility: visible;
+    animation: fadeIn 0.5s, fadeout 0.5s 2.5s;
+  }
+
+  @keyframes fadeIn {
+    from {bottom: 0; opacity: 0;}
+    to {bottom: 30px; opacity: 1;}
+  }
+
+  @keyframes fadeout {
+    from {bottom: 30px; opacity: 1;}
+    to {bottom: 0; opacity: 0;}
+  })=====";
 
 const char IRcontroller[] = R"=====(// TODO:
 // - make the slider integrated to the rest (2 colum of button 1 for slider)
@@ -504,9 +536,13 @@ function sendData() {
     var url = '/irSend?' + urlEncodedDataPairs.toString().replaceAll(',', '&');
     http.open('POST', url, true);
     http.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-    http.onreadystatechange = function () {//Call a function when the state changes.
+    http.onreadystatechange = function () {
         if (http.readyState == 4 && http.status == 200) {
-            //alert(http.responseText); // TODO: replace with toast ?-> https://www.w3schools.com/howto/howto_js_snackbar.asp
+            if (JSON.parse(http.response)['OK'] == 1) {
+                toast('command sended successfully')
+            } else {
+                toast('command failed sending')
+            }
         }
     }
     http.send();
@@ -638,6 +674,14 @@ for (const [key, value] of Object.entries(ACproperty)) {
             console.log("DB ERROR: unaccessible code", value)
             break;
     }
+}
+
+function toast(text) {
+    var t = document.getElementById("toast-massage");
+    t.className = "show";
+    t.textContent = text
+    //TODO: add var timeout (in css)
+    setTimeout(function () { t.className = t.className.replace("show", ""); }, 3 * 1000);
 }
 )=====";
 
