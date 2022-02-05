@@ -31,8 +31,9 @@ app.get('/wifiLogin', (req, res) => {
 })
 
 app.post('/irSend', (req, res) => {
-    console.log('Got body:', req.body);
-    // console.log(res)
+    let url = req.url
+    console.log('Got url:', url);
+    console.log("parsed: ",url.slice(8).replace(/&/g,' ').split(" "))
     res.json({"OK":1});
 })
 

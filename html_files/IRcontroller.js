@@ -158,9 +158,13 @@ function sendData() {
     var url = '/irSend?' + urlEncodedDataPairs.toString().replaceAll(',', '&');
     http.open('POST', url, true);
     http.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-    http.onreadystatechange = function () {//Call a function when the state changes.
+    http.onreadystatechange = function () {
         if (http.readyState == 4 && http.status == 200) {
-            //alert(http.responseText); // TODO: replace with toast ?-> https://www.w3schools.com/howto/howto_js_snackbar.asp
+            if (JSON.parse(http.response)['OK'] == 1) {
+                toast('command sended successfully')
+            } else {
+                toast('command failed sending')
+            }
         }
     }
     http.send();
@@ -292,4 +296,12 @@ for (const [key, value] of Object.entries(ACproperty)) {
             console.log("DB ERROR: unaccessible code", value)
             break;
     }
+}
+
+function toast(text) {
+    var t = document.getElementById("toast-massage");
+    t.className = "show";
+    t.textContent = text
+    //TODO: add var timeout (in css)
+    setTimeout(function () { t.className = t.className.replace("show", ""); }, 3 * 1000);
 }
