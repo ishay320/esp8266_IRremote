@@ -262,6 +262,11 @@ const char style[] = R"=====(:root {
     --bg-color: lightblue;
     background-color: var(--bg-color);
     font-size: 2vw;
+    user-select: none;
+    -moz-user-select: none;
+    -khtml-user-select: none;
+    -webkit-user-select: none;
+    -o-user-select: none;   
 }
 .title {
     position: sticky;
