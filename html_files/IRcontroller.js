@@ -234,7 +234,8 @@ function range(key, value, type) {
     slider.max = value[type][1]
     slider.value = ACproperty[key].active
     slider.step = type == "range-int" ? 1 : 0.1
-    slider.setAttribute("onchange", "updateTextInput(this)");
+    slider.addEventListener("change", updateTextInput)
+    slider.addEventListener("input", updateTextInput);
 
     card.appendChild(span)
     card.appendChild(number)
@@ -271,10 +272,13 @@ function clicked() {
     sendData()
 }
 
-function updateTextInput(element) {
+function updateTextInput(obj) {
+    let element = obj['srcElement']
     element.parentElement.childNodes[1].textContent = element.value
     ACproperty[element.id].active = element.value
-    sendData()
+    if (obj["type"] !== 'input') {
+        sendData()
+    }
 }
 
 for (const [key, value] of Object.entries(ACproperty)) {
@@ -308,6 +312,14 @@ function toast(text) {
 
 if ('serviceWorker' in navigator) {
     navigator.serviceWorker
-      .register('sw.js')
-      .then(() => { console.log('Service Worker Registered'); });
-  }
+        .register('sw.js')
+        .then(() => { console.log('Service Worker Registered'); });
+}
+
+//   to remove sw copy to cmd:
+/*
+navigator.serviceWorker.getRegistrations().then(function(registrations) {
+     for(let registration of registrations) {
+      registration.unregister()
+    } })
+*/
