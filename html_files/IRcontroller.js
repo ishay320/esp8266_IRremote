@@ -1,8 +1,8 @@
 // TODO:
 // - make the slider integrated to the rest (2 colum of button 1 for slider)
 // - hide unwanted buttons (add hide to db?)
-// - make the switches work with more icons (add array to icons arr?)
 // - DB check the real values
+// - make sure that the icons in bool are ok
 
 var ACproperty = {
     "protocol": {//X
@@ -129,24 +129,24 @@ var ACproperty = {
 }
 
 icons = {
-    "protocol": "",
-    "model": "",
-    "mode": "local_fire_department",
-    "celsius": "circle",
-    "degrees": "device_thermostat",
-    "fanspeed": "air",
-    "swingv": "swap_horiz",
-    "swingh": "swap_vert",
-    "light": "light_mode",
-    "beep": "volume_off",
-    "econo": "spa",
-    "filter": "grain",
-    "turbo": "bolt",
-    "quiet": "volume_down",
-    "sleep": "hotel",
-    "clean": "sanitizer",
-    "clock": "update",
-    "power": "power_settings_new",
+    "protocol": [""],
+    "model": [""],
+    "mode": ["highlight_off", "font_download", "ac_unit", "wb_sunny", "water_drop", "air"],
+    "celsius": ["circle"],
+    "degrees": ["device_thermostat"],
+    "fanspeed": ["filter_none", "filter_1", "filter_2", "filter_3", "filter_4", "filter_5"],
+    "swingv": ["horizontal_rule", "swap_horiz", "filter_1", "filter_2", "filter_3", "filter_4", "filter_5"],
+    "swingh": ["more_vert", "swap_vert", "filter_1", "filter_2", "filter_3", "filter_4", "filter_5"],
+    "light": ["light_mode", "mode_night"],
+    "beep": ["volume_off", "volume_up"],
+    "econo": ["spa"],
+    "filter": ["blur_on", "blur_off"],
+    "turbo": ["flash_on", "flash_off"],
+    "quiet": ["volume_down", "volume_up"],
+    "sleep": ["hotel"],
+    "clean": ["sanitizer"],
+    "clock": ["update"],
+    "power": ["power_settings_new"],
 }
 
 function sendData() {
@@ -180,7 +180,17 @@ function boolButton(key, value) {
 
     var i = document.createElement("i")
     i.className = "material-icons card-icon"
-    i.textContent = icons[key]
+    if (icons[key].length === 1) {
+        i.textContent = icons[key][0]
+        if (ACproperty[key].active == 0) {
+            i.style.color = "red"
+        } else {
+            i.style.color = "green"
+        }
+    }
+    else
+        i.textContent = icons[key][ACproperty[key].active]
+
 
     var span = document.createElement("span")
     span.className = "card-title"
@@ -190,11 +200,17 @@ function boolButton(key, value) {
     card.appendChild(span)
     document.getElementById("card-grid").appendChild(card).addEventListener("click", clicked)
 
-    if (ACproperty[key].active == 0) {
-        i.style.color = "red"
-    } else {
-        i.style.color = "green"
+
+}
+
+function getPosInDictionary(active, dic) {
+    let index = 0
+    for ([key, val] of Object.entries(dic)) {
+        if (key == active) break;
+        index++
     }
+    console.log(index)
+    return index
 }
 
 function switcher(key, value) { // TODO: join with boolButton
@@ -204,7 +220,10 @@ function switcher(key, value) { // TODO: join with boolButton
 
     var i = document.createElement("i")
     i.className = "material-icons card-icon"
-    i.textContent = icons[key]
+
+    let index = getPosInDictionary(ACproperty[key]["active"], ACproperty[key]['switch'])
+
+    i.textContent = icons[key][index]
 
     var span = document.createElement("span")
     span.className = "card-title"
@@ -248,10 +267,15 @@ function clicked() {
     switch (ACproperty[id].type) {
         case "bool":
             ACproperty[id].active = 1 - ACproperty[id].active
-            if (ACproperty[id].active == 0) {
-                this.getElementsByClassName("card-icon")[0].style.color = "red"
-            } else {
-                this.getElementsByClassName("card-icon")[0].style.color = "green"
+            if (icons[id].length === 1)
+                if (ACproperty[id].active == 0) {
+                    this.getElementsByClassName("card-icon")[0].style.color = "red"
+                } else {
+                    this.getElementsByClassName("card-icon")[0].style.color = "green"
+                }
+            else {
+                // update icon
+                this.firstChild.textContent = icons[id][ACproperty[id].active]
             }
             break;
         case "switch":
@@ -262,6 +286,9 @@ function clicked() {
             } else {
                 ACproperty[id].active = keyArray[activePos + 1]
             }
+            // update icon
+            let index = getPosInDictionary(ACproperty[id]["active"], ACproperty[id]['switch'])
+            this.firstChild.textContent = icons[id][index]
             break;
 
         default:
