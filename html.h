@@ -120,12 +120,12 @@ const char html_IRController[] = R"=====(<!DOCTYPE html>
             onclick="this.previousSibling.value=1-this.previousSibling.value" checked><br><br>
         <input type="submit" value="Submit">
     </form> -->
-
-    <form action="/">
-        <br>
-        <button>back to menu</button>
-    </form>
-
+    <nav class="nav-button">
+        <form class="card" onclick="window.location.href='/'">
+            <i class="material-icons card-icon">home</i>
+            <span class="card-title">Home</span>
+        </form>
+    </nav>
 
     <!-- TODO: add sensor -->
     <!-- <script>
@@ -380,6 +380,10 @@ i.card-icon {
   @keyframes fadeout {
     from {bottom: 30px; opacity: 1;}
     to {bottom: 0; opacity: 0;}
+  }
+  .nav-button{
+    font-size: 2em;
+    display: flex;
   })=====";
 
 const char IRcontroller[] = R"=====(// TODO:
