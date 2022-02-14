@@ -174,12 +174,10 @@ function sendData() {
 
 // on click -- update database , send command (maybe update esp - the send will do it)
 function boolButton(key, value) {
-    var card = document.createElement("div")
-    card.className = "card"
-    card.id = key
+    var card = document.querySelector("#card-template").content.cloneNode(true)
+    card.firstElementChild.id = key
 
-    var i = document.createElement("i")
-    i.className = "material-icons card-icon"
+    var i = card.querySelector("i")
     if (icons[key].length === 1) {
         i.textContent = icons[key][0]
         if (ACproperty[key].active == 0) {
@@ -191,15 +189,11 @@ function boolButton(key, value) {
     else
         i.textContent = icons[key][ACproperty[key].active]
 
-
-    var span = document.createElement("span")
-    span.className = "card-title"
+    var span = card.querySelector("span")
     span.textContent = key
 
-    card.appendChild(i)
-    card.appendChild(span)
-    document.getElementById("card-grid").appendChild(card).addEventListener("click", clicked)
-
+    document.getElementById("card-grid").appendChild(card)
+    document.querySelector("#"+key).addEventListener("click", clicked)
 
 }
 
@@ -209,41 +203,31 @@ function getPosInDictionary(active, dic) {
         if (key == active) break;
         index++
     }
-    console.log(index)
     return index
 }
 
 function switcher(key, value) { // TODO: join with boolButton
-    var card = document.createElement("div")
-    card.className = "card"
-    card.id = key
+    var card = document.querySelector("#card-template").content.cloneNode(true)
+    card.firstElementChild.id = key
 
-    var i = document.createElement("i")
-    i.className = "material-icons card-icon"
-
+    var i = card.querySelector("i")
     let index = getPosInDictionary(ACproperty[key]["active"], ACproperty[key]['switch'])
-
     i.textContent = icons[key][index]
 
-    var span = document.createElement("span")
-    span.className = "card-title"
+    var span = card.querySelector("span")
     span.textContent = key
 
-    card.appendChild(i)
-    card.appendChild(span)
-    document.getElementById("card-grid").appendChild(card).addEventListener("click", clicked)
+    document.getElementById("card-grid").appendChild(card)
+    document.querySelector("#"+key).addEventListener("click", clicked)
 }
 
 function range(key, value, type) {
-    var card = document.createElement("div")
-    card.className = "card-slider card"
+    var div = document.querySelector("#card-slider-template").content.cloneNode(true)
+    var span = div.querySelectorAll("span")
+    span[0].textContent = key
+    span[1].textContent = value.active
 
-    var span = document.createElement("span")
-    span.textContent = key
-
-    var slider = document.createElement("input")
-    slider.className = "slider"
-    slider.type = "range"
+    var slider = div.querySelector(".slider")
     slider.id = key
     slider.min = value[type][0]
     slider.max = value[type][1]
@@ -252,14 +236,7 @@ function range(key, value, type) {
     slider.addEventListener("change", updateTextInput)
     slider.addEventListener("input", updateTextInput);
 
-    var number = document.createElement("span")
-    number.textContent = value.active
-    number.className = "slider-number"
-
-    card.appendChild(span)
-    card.appendChild(slider)
-    card.appendChild(number)
-    document.getElementById("card-grid2").appendChild(card)
+    document.getElementById("card-grid2").appendChild(div)
 }
 
 function clicked() {
@@ -275,7 +252,7 @@ function clicked() {
                 }
             else {
                 // update icon
-                this.firstChild.textContent = icons[id][ACproperty[id].active]
+                this.firstElementChild.textContent = icons[id][ACproperty[id].active]
             }
             break;
         case "switch":
@@ -288,7 +265,7 @@ function clicked() {
             }
             // update icon
             let index = getPosInDictionary(ACproperty[id]["active"], ACproperty[id]['switch'])
-            this.firstChild.textContent = icons[id][index]
+            this.firstElementChild.textContent = icons[id][index]
             break;
 
         default:
@@ -301,7 +278,7 @@ function clicked() {
 
 function updateTextInput(obj) {
     let element = obj['srcElement']
-    element.parentElement.childNodes[2].textContent = element.value
+    element.parentElement.querySelector(".slider-number").textContent = element.value
     ACproperty[element.id].active = element.value
     if (obj["type"] !== 'input') {
         sendData()
