@@ -55,8 +55,12 @@ i.card-icon {
     top: 0.2em;
 }
 .card-slider {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
     transition-duration: 0.4s;
-    font-size: 0.5em;
+    font-size: 0.6em;
     width:40vw;
 }
 .card-slider:hover {
@@ -64,7 +68,7 @@ i.card-icon {
     text-shadow: 5px 5px 6px rgb(63, 62, 62);
 }
 .slider-number{
-    margin: 1em;
+    margin: 0 0 -0.6em 0;
 }
 .slider {
     margin: 5px;

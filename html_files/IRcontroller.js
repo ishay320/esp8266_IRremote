@@ -241,10 +241,6 @@ function range(key, value, type) {
     var span = document.createElement("span")
     span.textContent = key
 
-    var number = document.createElement("span")
-    number.textContent = value.active
-    number.className = "slider-number"
-
     var slider = document.createElement("input")
     slider.className = "slider"
     slider.type = "range"
@@ -256,9 +252,13 @@ function range(key, value, type) {
     slider.addEventListener("change", updateTextInput)
     slider.addEventListener("input", updateTextInput);
 
+    var number = document.createElement("span")
+    number.textContent = value.active
+    number.className = "slider-number"
+
     card.appendChild(span)
-    card.appendChild(number)
     card.appendChild(slider)
+    card.appendChild(number)
     document.getElementById("card-grid2").appendChild(card)
 }
 
@@ -301,7 +301,7 @@ function clicked() {
 
 function updateTextInput(obj) {
     let element = obj['srcElement']
-    element.parentElement.childNodes[1].textContent = element.value
+    element.parentElement.childNodes[2].textContent = element.value
     ACproperty[element.id].active = element.value
     if (obj["type"] !== 'input') {
         sendData()
