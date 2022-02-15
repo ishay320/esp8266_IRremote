@@ -2,6 +2,12 @@
 // - hide unwanted buttons (add hide to db?)
 // - DB check the real values
 // - make sure that the icons in bool are ok
+// - check what values the clock need
+// - add user custom ordering (edit)
+// - clean up the button making:
+//  - merge switch and bool
+//  - fix bottom int in range
+// - finalize getPosInDictionary
 
 var ACproperty = {
     "protocol": {//X
