@@ -25,16 +25,17 @@
     padding: 10px;
     display: flex;
     flex-direction: column;
-    /* justify-content: center; */
     align-items: center;
 }
 .card-grid{
     display: grid;
     grid-template-columns: auto auto;
     font-size: 2em;
+    grid-gap: 10px;
 }
 .card {
-    margin: 5px;
+    display: flex;
+    justify-content: center;
     background-color: grey;
     padding: 5px 10px 10px 10px; 
     border-radius: 10px;
@@ -47,29 +48,32 @@
     background-color: lightgray;
     text-shadow: 5px 5px 6px rgb(63, 62, 62);
 }
-
 i.card-icon {
     position: relative;
-    translate: 50px;
     font-size: 1em;
-    top: 0.2em;
+    top: 0.15em;
+    margin: 0 0.2em 0 0;
 }
 .card-slider {
     display: flex;
-    justify-content: center;
     align-items: center;
     flex-direction: column;
     transition-duration: 0.4s;
     font-size: 0.6em;
-    width:40vw;
 }
 .card-slider:hover {
     background-color: rgb(110, 110, 110);
     text-shadow: 5px 5px 6px rgb(63, 62, 62);
 }
+.empty{
+    height:5px;
+    background-color: gray;
+    border-radius: 10px;
+}
 .slider-number{
     margin: 0 0 -0.6em 0;
 }
+
 .slider {
     margin: 5px;
     -webkit-appearance: none;
@@ -82,9 +86,10 @@ i.card-icon {
     -webkit-transition: .2s;
     transition: opacity .2s;
 }
+
 .slider:hover {
     opacity: 1;
-}   
+}  
 .slider::-webkit-slider-thumb{
     -webkit-appearance: none;
     appearance: none;
@@ -93,6 +98,12 @@ i.card-icon {
     border-radius: 50%; 
     background: #222222;
     cursor: pointer;
+}
+input[type=time] {
+    border: none;
+    color: white;
+    font-size: 1em;
+    background-color: transparent;
 }
 
 /* The toast */

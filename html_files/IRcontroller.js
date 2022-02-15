@@ -1,5 +1,4 @@
 // TODO:
-// - make the slider integrated to the rest (2 colum of button 1 for slider)
 // - hide unwanted buttons (add hide to db?)
 // - DB check the real values
 // - make sure that the icons in bool are ok
@@ -149,6 +148,30 @@ icons = {
     "power": ["power_settings_new"],
 }
 
+var setting = {
+    "order": {
+        "power": 2,
+        "degrees": 2,
+        "mode": 1,
+        "fanspeed": 1,
+        "empty1": 2,
+        "swingv": 1,
+        "swingh": 1,
+        "light": 1,
+        "beep": 1,
+        "econo": 1,
+        "filter": 1,
+        "turbo": 1,
+        "quiet": 1,
+        "clean": 1,
+        "empty2": 1,
+        "sleep": 1,
+        "clock": 1,
+        "protocol": 2,
+        "celsius": 0,
+        "model": 0,
+    }
+}
 function sendData() {
     var http = new XMLHttpRequest();
     let urlEncodedDataPairs = [], name;
@@ -175,7 +198,13 @@ function sendData() {
 // on click -- update database , send command (maybe update esp - the send will do it)
 function boolButton(key, value) {
     var card = document.querySelector("#card-template").content.cloneNode(true)
-    card.firstElementChild.id = key
+    var div = card.firstElementChild;
+    if (setting.order[key] == 2) {
+        div.style = "grid-column: 1 / 3;"
+    } else if (setting.order[key] == 0) {
+        return
+    }
+    div.id = key
 
     var i = card.querySelector("i")
     if (icons[key].length === 1) {
@@ -193,7 +222,7 @@ function boolButton(key, value) {
     span.textContent = key
 
     document.getElementById("card-grid").appendChild(card)
-    document.querySelector("#"+key).addEventListener("click", clicked)
+    document.querySelector("#" + key).addEventListener("click", clicked)
 
 }
 
@@ -218,16 +247,23 @@ function switcher(key, value) { // TODO: join with boolButton
     span.textContent = key
 
     document.getElementById("card-grid").appendChild(card)
-    document.querySelector("#"+key).addEventListener("click", clicked)
+    document.querySelector("#" + key).addEventListener("click", clicked)
 }
 
 function range(key, value, type) {
-    var div = document.querySelector("#card-slider-template").content.cloneNode(true)
-    var span = div.querySelectorAll("span")
+    var card = document.querySelector("#card-slider-template").content.cloneNode(true)
+    var div = card.firstElementChild;
+    if (setting.order[key] == 2) {
+        div.style = "grid-column: 1 / 3;"
+    } else if (setting.order[key] == 0) {
+        return
+    }
+
+    var span = card.querySelectorAll("span")
     span[0].textContent = key
     span[1].textContent = value.active
 
-    var slider = div.querySelector(".slider")
+    var slider = card.querySelector(".slider")
     slider.id = key
     slider.min = value[type][0]
     slider.max = value[type][1]
@@ -236,7 +272,16 @@ function range(key, value, type) {
     slider.addEventListener("change", updateTextInput)
     slider.addEventListener("input", updateTextInput);
 
-    document.getElementById("card-grid2").appendChild(div)
+    document.getElementById("card-grid").appendChild(card)
+}
+
+function addEmpty(size) {
+    var div = document.createElement("empty");
+    if (size == 2) {
+        div.classList.add("empty")
+        div.style = "grid-column: 1 / 3;";
+    }
+    document.getElementById("card-grid").appendChild(div)
 }
 
 function clicked() {
@@ -285,7 +330,12 @@ function updateTextInput(obj) {
     }
 }
 
-for (const [key, value] of Object.entries(ACproperty)) {
+for (const [key, size] of Object.entries(setting.order)) {
+    if (key.includes("empty")) {
+        addEmpty(size)
+        continue;
+    }
+    var value = ACproperty[key]
     switch (value.type) {
         case "bool":
             boolButton(key, value)
