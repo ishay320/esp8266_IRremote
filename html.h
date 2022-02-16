@@ -23,10 +23,10 @@ const char html_IRController[] = R"=====(<!DOCTYPE html>
     <h1 class="title">IR controller</h1>
     <div class="body">
         <div class="card-grid" id="card-grid">
-
-        </div>
-        <div class="card-grid" id="card-grid2">
-
+            <!-- <div class="card" id="time">
+                <input class="card-input" type="time" name="time" id="input-time">
+                <span class="card-title">clock</span>
+            </div> -->
         </div>
     </div>
     <div id="toast-massage"></div>
@@ -40,6 +40,21 @@ const char html_IRController[] = R"=====(<!DOCTYPE html>
             }
         }
     </script>
+
+    <template id="card-template">
+        <div class="card" id="title">
+            <i class="material-icons card-icon">icon_name</i>
+            <span class="card-title">title</span>
+        </div>
+    </template>
+
+    <template id="card-slider-template">
+        <div class="card-slider card">
+            <span>title</span>
+            <input class="slider" type="range" id="title" min="1" max="100" step="1">
+            <span class="slider-number">0</span>
+        </div>
+    </template>
 
     <!-- <form action="/irSend" method="GET">
         <label for="protocol">protocol</label>
@@ -285,16 +300,17 @@ const char style[] = R"=====(:root {
     padding: 10px;
     display: flex;
     flex-direction: column;
-    /* justify-content: center; */
     align-items: center;
 }
 .card-grid{
     display: grid;
     grid-template-columns: auto auto;
     font-size: 2em;
+    grid-gap: 10px;
 }
 .card {
-    margin: 5px;
+    display: flex;
+    justify-content: center;
     background-color: grey;
     padding: 5px 10px 10px 10px; 
     border-radius: 10px;
@@ -307,25 +323,32 @@ const char style[] = R"=====(:root {
     background-color: lightgray;
     text-shadow: 5px 5px 6px rgb(63, 62, 62);
 }
-
 i.card-icon {
     position: relative;
-    translate: 50px;
     font-size: 1em;
-    top: 0.2em;
+    top: 0.15em;
+    margin: 0 0.2em 0 0;
 }
 .card-slider {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
     transition-duration: 0.4s;
-    font-size: 0.5em;
-    width:40vw;
+    font-size: 0.6em;
 }
 .card-slider:hover {
     background-color: rgb(110, 110, 110);
     text-shadow: 5px 5px 6px rgb(63, 62, 62);
 }
-.slider-number{
-    margin: 1em;
+.empty{
+    height:5px;
+    background-color: gray;
+    border-radius: 10px;
 }
+.slider-number{
+    margin: 0 0 -0.6em 0;
+}
+
 .slider {
     margin: 5px;
     -webkit-appearance: none;
@@ -338,9 +361,10 @@ i.card-icon {
     -webkit-transition: .2s;
     transition: opacity .2s;
 }
+
 .slider:hover {
     opacity: 1;
-}   
+}  
 .slider::-webkit-slider-thumb{
     -webkit-appearance: none;
     appearance: none;
@@ -349,6 +373,12 @@ i.card-icon {
     border-radius: 50%; 
     background: #222222;
     cursor: pointer;
+}
+input[type=time] {
+    border: none;
+    color: white;
+    font-size: 1em;
+    background-color: transparent;
 }
 
 /* The toast */
@@ -387,10 +417,12 @@ i.card-icon {
   })=====";
 
 const char IRcontroller[] = R"=====(// TODO:
-// - make the slider integrated to the rest (2 colum of button 1 for slider)
-// - hide unwanted buttons (add hide to db?)
 // - DB check the real values
 // - make sure that the icons in bool are ok
+// - check what values the clock need
+// - add user custom ordering (edit)
+// - clean up the button making:
+//  - fix bottom int in range
 
 var ACproperty = {
     "protocol": {//X
@@ -537,6 +569,30 @@ icons = {
     "power": ["power_settings_new"],
 }
 
+var setting = {
+    "order": {
+        "power": 2,
+        "degrees": 2,
+        "mode": 1,
+        "fanspeed": 1,
+        "empty1": 2,
+        "swingv": 1,
+        "swingh": 1,
+        "light": 1,
+        "beep": 1,
+        "econo": 1,
+        "filter": 1,
+        "turbo": 1,
+        "quiet": 1,
+        "clean": 1,
+        "empty2": 1,
+        "sleep": 1,
+        "clock": 1,
+        "protocol": 2,
+        "celsius": 0,
+        "model": 0,
+    }
+}
 function sendData() {
     var http = new XMLHttpRequest();
     let urlEncodedDataPairs = [], name;
@@ -558,84 +614,68 @@ function sendData() {
     http.send();
 }
 
-
-
-// on click -- update database , send command (maybe update esp - the send will do it)
-function boolButton(key, value) {
-    var card = document.createElement("div")
-    card.className = "card"
-    card.id = key
-
-    var i = document.createElement("i")
-    i.className = "material-icons card-icon"
-    if (icons[key].length === 1) {
-        i.textContent = icons[key][0]
-        if (ACproperty[key].active == 0) {
-            i.style.color = "red"
-        } else {
-            i.style.color = "green"
-        }
+function addButton(name, type, size) {
+    var card = document.querySelector("#card-template").content.cloneNode(true)
+    var div = card.firstElementChild;
+    div.id = name
+    if (size > 1) {
+        div.style = "grid-column: 1 / " + (size + 1) + ";"
+    } else if (size == 0 | size == undefined) {
+        return
     }
-    else
-        i.textContent = icons[key][ACproperty[key].active]
 
+    var i = card.querySelector("i")
+    switch (type) {
+        case "bool":
+            if (icons[name].length === 1) {
+                i.textContent = icons[name][0]
+                if (ACproperty[name].active == 0) {
+                    i.style.color = "red"
+                } else {
+                    i.style.color = "green"
+                }
+            }
+            else
+                i.textContent = icons[name][ACproperty[name].active]
+            break;
+        case "switch":
+            let index = getPosInDictionary(ACproperty[name]["active"], ACproperty[name]['switch'])
+            i.textContent = icons[name][index]
+            break;
+        default:
+            return
+    }
 
-    var span = document.createElement("span")
-    span.className = "card-title"
-    span.textContent = key
+    var span = card.querySelector("span")
+    span.textContent = name
 
-    card.appendChild(i)
-    card.appendChild(span)
-    document.getElementById("card-grid").appendChild(card).addEventListener("click", clicked)
-
-
+    div.addEventListener("click", clicked)
+    document.getElementById("card-grid").appendChild(card)
 }
 
-function getPosInDictionary(active, dic) {
+function getPosInDictionary(find, dic) {
     let index = 0
-    for ([key, val] of Object.entries(dic)) {
-        if (key == active) break;
+    for ([key, _] of Object.entries(dic)) {
+        if (key == find) break;
         index++
     }
-    console.log(index)
     return index
 }
 
-function switcher(key, value) { // TODO: join with boolButton
-    var card = document.createElement("div")
-    card.className = "card"
-    card.id = key
-
-    var i = document.createElement("i")
-    i.className = "material-icons card-icon"
-
-    let index = getPosInDictionary(ACproperty[key]["active"], ACproperty[key]['switch'])
-
-    i.textContent = icons[key][index]
-
-    var span = document.createElement("span")
-    span.className = "card-title"
-    span.textContent = key
-
-    card.appendChild(i)
-    card.appendChild(span)
-    document.getElementById("card-grid").appendChild(card).addEventListener("click", clicked)
-}
-
 function range(key, value, type) {
-    var card = document.createElement("div")
-    card.className = "card-slider card"
+    var card = document.querySelector("#card-slider-template").content.cloneNode(true)
+    var div = card.firstElementChild;
+    if (setting.order[key] == 2) {
+        div.style = "grid-column: 1 / 3;"
+    } else if (setting.order[key] == 0) {
+        return
+    }
 
-    var span = document.createElement("span")
-    span.textContent = key
+    var span = card.querySelectorAll("span")
+    span[0].textContent = key
+    span[1].textContent = value.active
 
-    var number = document.createElement("span")
-    number.textContent = value.active
-    number.className = "slider-number"
-
-    var slider = document.createElement("input")
-    slider.className = "slider"
-    slider.type = "range"
+    var slider = card.querySelector(".slider")
     slider.id = key
     slider.min = value[type][0]
     slider.max = value[type][1]
@@ -644,10 +684,16 @@ function range(key, value, type) {
     slider.addEventListener("change", updateTextInput)
     slider.addEventListener("input", updateTextInput);
 
-    card.appendChild(span)
-    card.appendChild(number)
-    card.appendChild(slider)
-    document.getElementById("card-grid2").appendChild(card)
+    document.getElementById("card-grid").appendChild(card)
+}
+
+function addEmpty(size) {
+    var div = document.createElement("empty");
+    if (size == 2) {
+        div.classList.add("empty")
+        div.style = "grid-column: 1 / 3;";
+    }
+    document.getElementById("card-grid").appendChild(div)
 }
 
 function clicked() {
@@ -663,7 +709,7 @@ function clicked() {
                 }
             else {
                 // update icon
-                this.firstChild.textContent = icons[id][ACproperty[id].active]
+                this.firstElementChild.textContent = icons[id][ACproperty[id].active]
             }
             break;
         case "switch":
@@ -676,7 +722,7 @@ function clicked() {
             }
             // update icon
             let index = getPosInDictionary(ACproperty[id]["active"], ACproperty[id]['switch'])
-            this.firstChild.textContent = icons[id][index]
+            this.firstElementChild.textContent = icons[id][index]
             break;
 
         default:
@@ -689,20 +735,23 @@ function clicked() {
 
 function updateTextInput(obj) {
     let element = obj['srcElement']
-    element.parentElement.childNodes[1].textContent = element.value
+    element.parentElement.querySelector(".slider-number").textContent = element.value
     ACproperty[element.id].active = element.value
     if (obj["type"] !== 'input') {
         sendData()
     }
 }
 
-for (const [key, value] of Object.entries(ACproperty)) {
+for (const [key, size] of Object.entries(setting.order)) {
+    if (key.includes("empty")) {
+        addEmpty(size)
+        continue;
+    }
+    var value = ACproperty[key]
     switch (value.type) {
         case "bool":
-            boolButton(key, value)
-            break;
         case "switch":
-            switcher(key, value)
+            addButton(key, value.type, setting.order[key])
             break;
         case "range-int":
             range(key, value, value.type)
