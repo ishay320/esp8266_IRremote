@@ -1,13 +1,10 @@
 // TODO:
-// - hide unwanted buttons (add hide to db?)
 // - DB check the real values
 // - make sure that the icons in bool are ok
 // - check what values the clock need
 // - add user custom ordering (edit)
 // - clean up the button making:
-//  - merge switch and bool
 //  - fix bottom int in range
-// - finalize getPosInDictionary
 
 var ACproperty = {
     "protocol": {//X
@@ -199,61 +196,52 @@ function sendData() {
     http.send();
 }
 
-
-
-// on click -- update database , send command (maybe update esp - the send will do it)
-function boolButton(key, value) {
+function addButton(name, type, size) {
     var card = document.querySelector("#card-template").content.cloneNode(true)
     var div = card.firstElementChild;
-    if (setting.order[key] == 2) {
-        div.style = "grid-column: 1 / 3;"
-    } else if (setting.order[key] == 0) {
+    div.id = name
+    if (size > 1) {
+        div.style = "grid-column: 1 / " + (size + 1) + ";"
+    } else if (size == 0 | size == undefined) {
         return
     }
-    div.id = key
 
     var i = card.querySelector("i")
-    if (icons[key].length === 1) {
-        i.textContent = icons[key][0]
-        if (ACproperty[key].active == 0) {
-            i.style.color = "red"
-        } else {
-            i.style.color = "green"
-        }
+    switch (type) {
+        case "bool":
+            if (icons[name].length === 1) {
+                i.textContent = icons[name][0]
+                if (ACproperty[name].active == 0) {
+                    i.style.color = "red"
+                } else {
+                    i.style.color = "green"
+                }
+            }
+            else
+                i.textContent = icons[name][ACproperty[name].active]
+            break;
+        case "switch":
+            let index = getPosInDictionary(ACproperty[name]["active"], ACproperty[name]['switch'])
+            i.textContent = icons[name][index]
+            break;
+        default:
+            return
     }
-    else
-        i.textContent = icons[key][ACproperty[key].active]
 
     var span = card.querySelector("span")
-    span.textContent = key
+    span.textContent = name
 
+    div.addEventListener("click", clicked)
     document.getElementById("card-grid").appendChild(card)
-    document.querySelector("#" + key).addEventListener("click", clicked)
-
 }
 
-function getPosInDictionary(active, dic) {
+function getPosInDictionary(find, dic) {
     let index = 0
-    for ([key, val] of Object.entries(dic)) {
-        if (key == active) break;
+    for ([key, _] of Object.entries(dic)) {
+        if (key == find) break;
         index++
     }
     return index
-}
-
-function switcher(key, value) { // TODO: join with boolButton
-    var card = document.querySelector("#card-template").content.cloneNode(true)
-    card.firstElementChild.id = key
-
-    var i = card.querySelector("i")
-    let index = getPosInDictionary(ACproperty[key]["active"], ACproperty[key]['switch'])
-    i.textContent = icons[key][index]
-
-    var span = card.querySelector("span")
-    span.textContent = key
-
-    document.getElementById("card-grid").appendChild(card)
-    document.querySelector("#" + key).addEventListener("click", clicked)
 }
 
 function range(key, value, type) {
@@ -344,10 +332,8 @@ for (const [key, size] of Object.entries(setting.order)) {
     var value = ACproperty[key]
     switch (value.type) {
         case "bool":
-            boolButton(key, value)
-            break;
         case "switch":
-            switcher(key, value)
+            addButton(key, value.type, setting.order[key])
             break;
         case "range-int":
             range(key, value, value.type)
